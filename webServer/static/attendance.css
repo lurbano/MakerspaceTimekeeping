@@ -1,0 +1,43 @@
+#students {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.student {
+  border: 1px solid black;
+  width: fit-content;
+  text-align: center;
+  margin: 5px;
+}
+
+.studentName{
+
+}
+
+.classTime{
+  font-size: small;
+}
+
+#signIn{
+  position: absolute;
+  top: 5%;
+  left: 5%;
+  width:90%;
+  height: 90%;
+  background-color: yellow;
+  text-align: center;
+}
+
+.bigButton {
+  width: 10em;
+  height: 5em;
+  background-color: lightgrey;
+  border: 4px outset grey;
+  border-radius: 10px;
+}
+.bigButtonTitle {
+  font: small-caps 2em bold fantasy;
+}
+.bigButtonInfo {
+  font-size: 1em;
+}

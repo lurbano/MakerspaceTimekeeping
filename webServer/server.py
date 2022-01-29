@@ -8,33 +8,35 @@ import tornado.websocket
 import tornado.ioloop
 import tornado.web
 import tornado.gen
-import RPi.GPIO as GPIO
+####import RPi.GPIO as GPIO
 import time
 import subprocess
 import json
 import sys
 import argparse
 import asyncio
+
+from attendanceLogger import studentLogger
 #from numpy import arange, mean
-import numpy as np
+####import numpy as np
 
 #from ledController import *
 #from ledPixels import *
 #from oledU import *
-from basic import *
+####from basic import *
 
-nPix = 20
+####nPix = 20
 
 # get number of pixels from the command line
-parser = argparse.ArgumentParser()
-parser.add_argument("-n", "--nPix", help = "Number of pixels")
-args = parser.parse_args()
+# parser = argparse.ArgumentParser()
+# parser.add_argument("-n", "--nPix", help = "Number of pixels")
+# args = parser.parse_args()
 
-if args.nPix:
-	try:
-		nPix = int(args.nPix)
-	except:
-		print("using default (20) pixels: -nPix 20")
+# if args.nPix:
+# 	try:
+# 		nPix = int(args.nPix)
+# 	except:
+# 		print("using default (20) pixels: -nPix 20")
 
 #Tornado Folder Paths
 settings = dict(
@@ -72,10 +74,9 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 				r = 'Say what?'
 				self.write_message({"info": "hello", "reply":r})
 
-			if msg["what"] == "timer":
-				m = float(msg["minutes"])
-				s = float(msg["seconds"])
-				task = asyncio.create_task(basicTimer(self, m, s))
+			if msg["what"] == "sign in":
+				stuLog = studentLogger(msg['info'])
+
 
 
 			if msg["what"] == "reboot":

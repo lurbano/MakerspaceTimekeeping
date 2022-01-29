@@ -18,6 +18,10 @@ $(document).ready(function(){
             $("#signal").html("READY");
             $("#ws-status").html("Connected");
             $("#ws-status").css("background-color", "#afa");
+
+            confWin = new confirmWindow({ws:ws});
+            makeStudentPage(ws);
+
         };
 
         ws.onmessage = function(evt) {
@@ -38,6 +42,10 @@ $(document).ready(function(){
                 s = sData.s.toString().padStart(2,"0");
                 $("#timeLeft").html(m + ":" + s);
               }
+
+              // if (sData.what == 'sign in') {
+              //   let stuLog = studentLogger(sData.info);
+              // }
 
             };
         };

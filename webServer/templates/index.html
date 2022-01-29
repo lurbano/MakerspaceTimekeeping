@@ -1,44 +1,28 @@
-<html>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Makerspace Attendance</title>
+    <link rel="stylesheet" href="{{ static_url("attendance.css") }}">
 
-<head>
-  <title> Light Bar </title>
-  <style>
-    #ws-status {
-      background-color: #faa;
-      padding-inline: 3px;
-    }
-    table, th, td {
-      border: 1px solid black;
-    }
-    input[type=number]{
-      width: 5em;
-    }
-  </style>
+    <!-- <script type="text/javascript" scr='jquery-3.6.0.min.js'></script>
+    <script type="text/javascript" src="students.js"></script> -->
 
-</head>
+  </head>
+  <body>
+    hi
+    <div id="students">
 
-<body>
+    </div>
 
-Connection: <span id="ws-status"> Waiting... </span>
-<div id='errorInfo'></div>
+  </body>
 
-<input type="button" id="hello" value="Hello World">
-<span id="HelloResponse"></span>
+  <script type="text/javascript" src="attendance.js"></script>
+  <!-- Scripts -->
+  <script src="{{ static_url("jquery-3.6.0.min.js") }}"></script>
+  <script src="{{ static_url("students.js") }}"></script>
+  <script src="{{ static_url("attendance.js") }}"></script>
+  <script src="{{ static_url("ws-client.js") }}"></script>
 
-<p>
-  <input type="button" id="timer" value="Start Timer">
-  <input type="number" id="timerMin" min="0" value="0" title="minutes">
-  <input type="number" id="timerSec" min="0" value="0" title="seconds">
-  <span id="timeLeft"></span>
-
-<br>
-<input type="button" id="reboot" value="Reboot Pi">
-
-
-<!-- Scripts -->
-<script src="{{ static_url("jquery-3.4.1.min.js") }}"></script>
-<script src="{{ static_url("ws-client.js") }}"></script>
-
-</body>
 
 </html>
