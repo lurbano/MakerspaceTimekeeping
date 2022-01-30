@@ -90,6 +90,13 @@ From your home directory clone the github repository.
 git clone https://github.com/lurbano/piTornado-basic.git
 ```
 
+# Install tinydb
+```console
+sudo pip3 install tinydb
+```
+
+
+
 # Setting up Server
 ## Install Tornado Webserver
 

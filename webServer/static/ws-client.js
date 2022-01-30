@@ -27,27 +27,13 @@ $(document).ready(function(){
         ws.onmessage = function(evt) {
             //console.log(evt);
             var sData = JSON.parse(evt.data);
-            //console.log(sData);
-            if (sData.sensor !== 'undefined'){
-              //console.log(sData.info + "|" + )
+            console.log(sData);
 
-              if (sData.info == 'hello'){
-                r = sData.reply.toString();
-                $("#HelloResponse").html(r);
-              }
+            //WHAT TO DO WHEN WE GET A MESSAGE FROM THE SERVER
+            if (sData.info == 'sign in'){
+              window.alert(sData.msg);
+            }
 
-              //WHAT TO DO WHEN WE GET A MESSAGE FROM THE SERVER
-              if (sData.info == 'timer'){
-                m = sData.m.toString();
-                s = sData.s.toString().padStart(2,"0");
-                $("#timeLeft").html(m + ":" + s);
-              }
-
-              // if (sData.what == 'sign in') {
-              //   let stuLog = studentLogger(sData.info);
-              // }
-
-            };
         };
 
         ws.onclose = function(evt) {

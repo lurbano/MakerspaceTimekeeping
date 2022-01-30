@@ -10,6 +10,11 @@
   margin: 5px;
 }
 
+.student_opts {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
 .studentName{
 
 }
@@ -40,4 +45,13 @@
 }
 .bigButtonInfo {
   font-size: 1em;
+}
+
+#cancelSignInButton {
+  width: 5em;
+  height: 2em;
+  background-color: lightgrey;
+  border: 4px outset grey;
+  border-radius: 10px;
+  font: small-caps 1.2em bold fantasy;
 }

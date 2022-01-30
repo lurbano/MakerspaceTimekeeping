@@ -16,7 +16,11 @@ import sys
 import argparse
 import asyncio
 
+
 from attendanceLogger import studentLogger
+
+db_directory = "./dataLog/"
+
 #from numpy import arange, mean
 ####import numpy as np
 
@@ -75,7 +79,8 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 				self.write_message({"info": "hello", "reply":r})
 
 			if msg["what"] == "sign in":
-				stuLog = studentLogger(msg['info'])
+				stuLog = studentLogger(self, db_directory)
+				stuLog.logSignIn(msg['info'])
 
 
 

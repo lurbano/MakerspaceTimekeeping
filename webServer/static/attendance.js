@@ -48,24 +48,36 @@ class confirmWindow{
     optionsDiv.classList.add("student_opts");
 
     //sign in
-    let signInButton = getButton("Sign In", t.time);
-    optionsDiv.appendChild(signInButton);
-    signInButton.addEventListener("click", () => {
-      console.log("sign in", this);
-      let msg = {
-        what: "sign in",
-        info: this.student
-      };
-      this.ws.send(JSON.stringify(msg));
-    })
+    this.makeSignInButton(optionsDiv, t, "Sign In");
+    this.makeSignInButton(optionsDiv, t, "Sign Out");
 
     this.div.appendChild(optionsDiv);
   }
 
+  makeSignInButton(div, t, action="signIn"){
+    let signInButton = getButton(action, t.time);
+    div.appendChild(signInButton);
+    signInButton.addEventListener("click", () => {
+      console.log("sign in", this);
+      let msg = {
+        what: "sign in",
+        info: {
+          name: this.student.name,
+          id: this.student.id,
+          action: action,
+          time: t.dateObject.toJSON()
+        }
+      };
+      this.ws.send(JSON.stringify(msg));
+    })
+  }
+
+
   makeCancelButton(){
     this.cancelDiv = doc.createElement("input");
     this.cancelDiv.setAttribute("type", "button");
-    this.cancelDiv.setAttribute("value", "Cancel");
+    this.cancelDiv.setAttribute("value", "Close");
+    this.cancelDiv.setAttribute("id", "cancelSignInButton");
 
     this.div.appendChild(this.cancelDiv);
 
