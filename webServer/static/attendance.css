@@ -1,13 +1,17 @@
 #students {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
+  justify-items: center;
 }
 
 .student {
-  border: 1px solid black;
-  width: fit-content;
+  border: 4px ridge #059aba;
+  background-color: #7fe6fc;
+  width: 75%;
   text-align: center;
   margin: 5px;
+  font: small-caps 1.5em bold fantasy;
+  padding: 3px;
 }
 
 .student_opts {

@@ -261,6 +261,25 @@ function makeStudentPage(ws){
     div.classList.add("student");
     div.setAttribute("id", `id_${students[i].id}`);
 
+    let bg;
+    switch(parseInt(students[i].grade)){
+      case 2021:
+        bg = '#ffb795';
+        break;
+      case 2022:
+        bg = '#ffec95';
+        break;
+      case 2023:
+        bg = '#d695ff';
+        break;
+      case 2024:
+        bg = '#95e6ff';
+        break;
+      default:
+        bg = '#ffea95';
+    }
+    div.style.backgroundColor = bg;
+
     let nameDiv = doc.createElement('div');
     nameDiv.classList.add("studentName");
     nameDiv.innerHTML = students[i].name;
