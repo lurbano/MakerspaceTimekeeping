@@ -14,6 +14,9 @@ class confirmWindow{
     this.parentDivId = parentDivId;
     this.divId = divId;
     this.ws = ws;
+    this.iPads = iPads;
+
+    this.button = {};
 
     this.parentDiv = doc.getElementById(parentDivId);
   }
@@ -25,7 +28,8 @@ class confirmWindow{
     this.div.setAttribute("id", 'signIn');
     //this.div.classList.add('signIn');
 
-    this.makeCancelButton();
+    //this.makeCancelButton();
+    this.cancelBut = new cancelButton(this.div);
 
     //put student name on page
     let nameTitle = doc.createElement('div');
@@ -51,6 +55,9 @@ class confirmWindow{
     this.makeSignInButton(optionsDiv, t, "Sign In");
     this.makeSignInButton(optionsDiv, t, "Sign Out");
 
+    //checkout
+    this.makeCheckoutButton(optionsDiv, t, 'iPad', "Check Out");
+
     this.div.appendChild(optionsDiv);
   }
 
@@ -58,7 +65,7 @@ class confirmWindow{
     let signInButton = getButton(action, t.time);
     div.appendChild(signInButton);
     signInButton.addEventListener("click", () => {
-      console.log("sign in", this);
+      //console.log("sign in", this);
       let msg = {
         what: "sign in",
         info: {
@@ -72,25 +79,74 @@ class confirmWindow{
     })
   }
 
+  makeCheckoutButton(div, t, item="iPad", action="Check Out"){
+    this.button[item] = getCheckoutButton(action, item);
+    div.appendChild(this.button[item]);
 
-  makeCancelButton(){
-    this.cancelDiv = doc.createElement("input");
-    this.cancelDiv.setAttribute("type", "button");
-    this.cancelDiv.setAttribute("value", "Close");
-    this.cancelDiv.setAttribute("id", "cancelSignInButton");
 
-    this.div.appendChild(this.cancelDiv);
+    this.button[item].addEventListener("click", () => {
 
-    this.cancelDiv.addEventListener('click', () => {
-      this.div.remove();
+      if (item == 'iPad'){
+        var inventory = iPads; //from iPads.js
+      }
+
+      let inventoryWindow = new checkoutControl({
+        parentDiv: this.parentDiv,
+        items: inventory,
+        ws: this.ws
+      });
+
     })
+  }
 
+}
+
+class checkoutControl{
+  constructor({
+                items = iPads,
+                parentDiv = undefined,
+                ws = undefined
+              } = {}){
+
+    this.ws = ws;
+    this.items = items;
+    this.parentDiv = parentDiv;
+
+    this.makeWindow();
+  }
+  makeWindow(){
+    this.window = doc.createElement('div');
+    this.window.classList.add('inventoryWindow');
+    this.window.innerHTML = "Inventory";
+
+    this.cancelBut = new cancelButton(this.window);
+
+    this.parentDiv.appendChild(this.window);
+  }
+}
+class cancelButton{
+  constructor(parentDiv){
+    this.parentDiv = parentDiv;
+    this.button = doc.createElement("input");
+    this.button.setAttribute("type", "button");
+    this.button.setAttribute("value", "Close");
+    this.button.classList.add('closeButton');
+
+    this.parentDiv.appendChild(this.button);
+
+    this.button.addEventListener('click', () => {
+      console.log("Close: ", this.parentDiv);
+      this.parentDiv.remove();
+
+    })
+    //return this.button;
   }
 }
 
-function getButton(title="Hello", info="hi!"){
+
+function getButton(title="Hello", info="hi!", className="bigButton"){
   let button = doc.createElement('div');
-  button.classList.add("bigButton");
+  button.classList.add(className);
 
   let titleDiv = doc.createElement('div');
   titleDiv.classList.add('bigButtonTitle');
@@ -100,6 +156,25 @@ function getButton(title="Hello", info="hi!"){
   let infoDiv = doc.createElement('div');
   infoDiv.classList.add("bigButtonInfo");
   infoDiv.innerHTML = info;
+  button.appendChild(infoDiv);
+
+  return button;
+
+}
+
+function getCheckoutButton(title="Hello", type='iPad', className='iPadButton'){
+  let button = doc.createElement('div');
+
+  button.classList.add(className);
+
+  let titleDiv = doc.createElement('div');
+  titleDiv.classList.add('bigButtonInfo');
+  titleDiv.innerHTML = "Check Out";
+  button.appendChild(titleDiv);
+
+  let infoDiv = doc.createElement('div');
+  infoDiv.classList.add("bigButtonTitle");
+  infoDiv.innerHTML = type;
   button.appendChild(infoDiv);
 
   return button;

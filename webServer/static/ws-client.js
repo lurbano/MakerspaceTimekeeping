@@ -19,7 +19,10 @@ $(document).ready(function(){
             $("#ws-status").html("Connected");
             $("#ws-status").css("background-color", "#afa");
 
-            confWin = new confirmWindow({ws:ws});
+            confWin = new confirmWindow({
+              ws:ws
+            });
+            console.log("onopen", iPads);
             makeStudentPage(ws);
 
         };

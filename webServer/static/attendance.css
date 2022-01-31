@@ -1,6 +1,6 @@
 #students {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(6, 1fr);
 }
 
 .student {
@@ -41,10 +41,10 @@
   border-radius: 10px;
 }
 .bigButtonTitle {
-  font: small-caps 2em bold fantasy;
+  font: small-caps 1.5em bold fantasy;
 }
 .bigButtonInfo {
-  font-size: 1em;
+  font: small-caps 1.1em bold fantasy;
 }
 
 #cancelSignInButton {
@@ -54,4 +54,44 @@
   border: 4px outset grey;
   border-radius: 10px;
   font: small-caps 1.2em bold fantasy;
+}
+
+.closeButton {
+  width: 5em;
+  height: 2em;
+  background-color: lightgrey;
+  border: 4px outset grey;
+  border-radius: 10px;
+  font: small-caps 1.2em bold fantasy;
+}
+
+.iPadButton {
+  width: 8em;
+  height: 6em;
+  background-color: white;
+  border: 4px outset black;
+  border-radius: 10px;
+  padding-top:1em;
+
+  transition-property: height;
+  transition-duration: 1s;
+}
+.iPadWindow {
+  width: 15em;
+  height: 12em;
+  background-color: white;
+  border: 4px outset black;
+  border-radius: 10px;
+  padding-top:1em;
+
+  transition-property: all;
+  transition-duration: 1s;
+}
+
+.inventoryWindow {
+  position: absolute;
+  margin: auto;
+  width: 90%;
+  height: 90%;
+  background-color: green;
 }
