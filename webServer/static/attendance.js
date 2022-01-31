@@ -117,9 +117,14 @@ class checkoutControl{
   makeWindow(){
     this.window = doc.createElement('div');
     this.window.classList.add('inventoryWindow');
-    this.window.innerHTML = "Inventory";
-
     this.cancelBut = new cancelButton(this.window);
+
+    for (let i = 1; i < this.items.length; i++){
+      this.items[i].button = doc.createElement('div');
+      this.items[i].button.classList.add('item');
+      this.items[i].button.innerHTML = this.items[i].name;
+      this.window.append(this.items[i].button);
+    }
 
     this.parentDiv.appendChild(this.window);
   }

@@ -93,5 +93,10 @@
   margin: auto;
   width: 90%;
   height: 90%;
-  background-color: green;
+  background-color: lightgreen;
+  text-align: center;
+}
+
+.item {
+  background-color: lightblue;
 }
