@@ -123,7 +123,7 @@ var roll = [
     name: 'Katarina',
     id: 25,
     grade: 2022,
-    classTime: [{"day":"Tuesday", "time":"11:30"},{"day":"Friday", "time":"11:30"}]},
+    classTime: []},
   {
     name: 'Hali',
     id: 26,
@@ -143,5 +143,10 @@ var roll = [
     name: 'Miles',
     id: 29,
     grade: 2026,
-    classTime: [{"day":"Tuesday", "time":"11:30"},{"day":"Friday", "time":"11:30"}]}
+    classTime: [{"day":"Tuesday", "time":"11:30"},{"day":"Friday", "time":"11:30"}]},
+  {
+    name: 'Ava',
+    id: 30,
+    grade: 2024,
+    classTime: []}
 ];
