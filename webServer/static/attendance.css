@@ -24,7 +24,7 @@
 }
 
 #signIn{
-  position: absolute;
+  position: fixed;
   top: 5%;
   left: 5%;
   width:90%;
@@ -57,6 +57,8 @@
 }
 
 .closeButton {
+  position:fixed;
+  right:5em;
   width: 5em;
   height: 2em;
   background-color: lightgrey;
@@ -89,7 +91,7 @@
 }
 
 .inventoryWindow {
-  position: absolute;
+  position: fixed;
   margin: auto;
   width: 90%;
   height: 90%;

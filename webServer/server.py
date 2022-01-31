@@ -17,7 +17,8 @@ import argparse
 import asyncio
 
 
-from attendanceLogger import studentLogger
+from Logger import studentLogger
+from Logger import checkoutLogger
 
 db_directory = "./dataLog/"
 
@@ -70,23 +71,26 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 		print ('[WS] Incoming on_message:', message)
 		try:
 			msg = json.loads(message)
-			if msg["what"] == "server":
-				if msg["opts"] == "off":
-					sys.exit("Stopping server")
-
-			if msg["what"] == "hello":
-				r = 'Say what?'
-				self.write_message({"info": "hello", "reply":r})
+			# if msg["what"] == "server":
+			# 	if msg["opts"] == "off":
+			# 		sys.exit("Stopping server")
+			#
+			# if msg["what"] == "hello":
+			# 	r = 'Say what?'
+			# 	self.write_message({"info": "hello", "reply":r})
 
 			if msg["what"] == "sign in":
 				stuLog = studentLogger(self, db_directory)
 				stuLog.logSignIn(msg['info'])
 
+			if msg['what'] == 'checkout':
+				logger = checkoutLogger(self, db_directory)
+				logger.checkout(msg['info'])
 
 
-			if msg["what"] == "reboot":
-				subprocess.Popen('sleep 5 ; sudo reboot', shell=True)
-				main_loop.stop()
+			# if msg["what"] == "reboot":
+			# 	subprocess.Popen('sleep 5 ; sudo reboot', shell=True)
+			# 	main_loop.stop()
 
 
 		except Exception as e:

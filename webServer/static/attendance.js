@@ -92,8 +92,10 @@ class confirmWindow{
 
       let inventoryWindow = new checkoutControl({
         parentDiv: this.parentDiv,
+        itemName: item,
         items: inventory,
-        ws: this.ws
+        ws: this.ws,
+        student: this.student
       });
 
     })
@@ -103,14 +105,18 @@ class confirmWindow{
 
 class checkoutControl{
   constructor({
+                itemName = "iPad",
                 items = iPads,
                 parentDiv = undefined,
-                ws = undefined
+                ws = undefined,
+                student = undefined
               } = {}){
 
     this.ws = ws;
+    this.itemName = itemName;
     this.items = items;
     this.parentDiv = parentDiv;
+    this.student = student;
 
     this.makeWindow();
   }
@@ -119,11 +125,28 @@ class checkoutControl{
     this.window.classList.add('inventoryWindow');
     this.cancelBut = new cancelButton(this.window);
 
-    for (let i = 1; i < this.items.length; i++){
-      this.items[i].button = doc.createElement('div');
+    for (let i = 0; i < this.items.length; i++){
+      this.items[i].button = getButton(this.items[i].name);
+      //this.items[i].button = doc.createElement('div');
       this.items[i].button.classList.add('item');
-      this.items[i].button.innerHTML = this.items[i].name;
+      //this.items[i].button.innerHTML = this.items[i].name;
       this.window.append(this.items[i].button);
+
+      this.items[i].button.addEventListener("click", () => {
+        console.log( `${this.student.name} checking out ${this.items[i].name}`);
+        let t = getTime();
+        let msg = {
+          what: `checkout`,
+          info: {
+            itemType: this.itemName,
+            name: this.student.name,
+            id: this.student.id,
+            item: this.items[i].name,
+            time: t.dateObject.toJSON()
+          }
+        };
+        this.ws.send(JSON.stringify(msg));
+      });
     }
 
     this.parentDiv.appendChild(this.window);
@@ -149,7 +172,7 @@ class cancelButton{
 }
 
 
-function getButton(title="Hello", info="hi!", className="bigButton"){
+function getButton(title="Hello", info="-", className="bigButton"){
   let button = doc.createElement('div');
   button.classList.add(className);
 

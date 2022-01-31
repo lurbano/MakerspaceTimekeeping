@@ -37,6 +37,10 @@ $(document).ready(function(){
               window.alert(sData.msg);
             }
 
+            if (sData.info == 'checkout'){
+              window.alert(sData.msg);
+            }
+
         };
 
         ws.onclose = function(evt) {
