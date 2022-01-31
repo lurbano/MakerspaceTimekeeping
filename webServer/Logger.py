@@ -31,7 +31,7 @@ class checkoutLogger:
 
         try:
             self.logDB.insert(info)
-            self.handler.write_message({'info':'checkout', 'msg':f'Checkout of {info["itemType"]} ({info["item"]}) by {info["name"]} successful'})
+            self.handler.write_message({'info':'checkout', 'msg':f'{info["action"]} of {info["itemType"]} ({info["item"]}) by {info["name"]} successful'})
 
         except:
-            self.handler.write_message({'info':'checkout', 'msg':"Error: Failed to Check out"})
+            self.handler.write_message({'info':'checkout', 'msg':"Error: Failed to Check In/Out"})

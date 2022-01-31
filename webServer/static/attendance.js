@@ -23,7 +23,7 @@ class confirmWindow{
 
   makeWindow(student){
     this.student = student;
-    console.log(student);
+
     this.div = doc.createElement("div");
     this.div.setAttribute("id", 'signIn');
     //this.div.classList.add('signIn');
@@ -57,12 +57,21 @@ class confirmWindow{
 
     //checkout
     this.makeCheckoutButton(optionsDiv, t, 'iPad', "Check Out");
+    this.makeCheckoutButton(optionsDiv, t, 'iPad', "Check In");
 
     this.div.appendChild(optionsDiv);
   }
 
-  makeSignInButton(div, t, action="signIn"){
+  makeSignInButton(div, t, action="Sign In"){
     let signInButton = getButton(action, t.time);
+    if (action == 'Sign Out'){
+      signInButton.style.gridColumn = 2;
+      signInButton.style.gridRow = 2;
+    }
+    else if (action == 'Sign In'){
+      signInButton.style.gridColumn = 2;
+      signInButton.style.gridRow = 1;
+    }
     div.appendChild(signInButton);
     signInButton.addEventListener("click", () => {
       //console.log("sign in", this);
@@ -81,6 +90,16 @@ class confirmWindow{
 
   makeCheckoutButton(div, t, item="iPad", action="Check Out"){
     this.button[item] = getCheckoutButton(action, item);
+
+    if (action == 'Check Out'){
+      this.button[item].style.gridColumn = 3;
+      this.button[item].style.gridRow = 1;
+    }
+    else if (action == 'Check In'){
+      this.button[item].style.gridColumn = 3;
+      this.button[item].style.gridRow = 2;
+    }
+
     div.appendChild(this.button[item]);
 
 
@@ -95,7 +114,8 @@ class confirmWindow{
         itemName: item,
         items: inventory,
         ws: this.ws,
-        student: this.student
+        student: this.student,
+        action: action
       });
 
     })
@@ -109,7 +129,8 @@ class checkoutControl{
                 items = iPads,
                 parentDiv = undefined,
                 ws = undefined,
-                student = undefined
+                student = undefined,
+                action = "Check Out"
               } = {}){
 
     this.ws = ws;
@@ -117,6 +138,7 @@ class checkoutControl{
     this.items = items;
     this.parentDiv = parentDiv;
     this.student = student;
+    this.action = action;
 
     this.makeWindow();
   }
@@ -136,8 +158,9 @@ class checkoutControl{
         console.log( `${this.student.name} checking out ${this.items[i].name}`);
         let t = getTime();
         let msg = {
-          what: `checkout`,
+          what: "checkout",
           info: {
+            action: this.action,
             itemType: this.itemName,
             name: this.student.name,
             id: this.student.id,
@@ -163,7 +186,6 @@ class cancelButton{
     this.parentDiv.appendChild(this.button);
 
     this.button.addEventListener('click', () => {
-      console.log("Close: ", this.parentDiv);
       this.parentDiv.remove();
 
     })
@@ -197,7 +219,7 @@ function getCheckoutButton(title="Hello", type='iPad', className='iPadButton'){
 
   let titleDiv = doc.createElement('div');
   titleDiv.classList.add('bigButtonInfo');
-  titleDiv.innerHTML = "Check Out";
+  titleDiv.innerHTML = title;
   button.appendChild(titleDiv);
 
   let infoDiv = doc.createElement('div');
@@ -262,6 +284,30 @@ function makeStudentPage(ws){
 
 }
 
+class messageWindow{
+  constructor({
+                parentDiv = doc.getElementById('students'),
+                ws = undefined,
+                msg = 'Hi!'
+              } = {}){
 
+    this.ws = ws;
+    this.parentDiv = parentDiv;
+    this.msg = msg;
 
-//makeStudentPage();
+    this.makeWindow();
+  }
+  makeWindow(){
+    this.window = doc.createElement('div');
+    this.window.classList.add('messageWindow');
+    //this.window.innerHTML = this.msg;
+    this.cancelBut = new cancelButton(this.window);
+
+    let m = doc.createElement('div');
+    m.classList.add('message');
+    m.innerHTML = this.msg;
+    this.window.appendChild(m);
+
+    this.parentDiv.appendChild(this.window);
+  }
+}

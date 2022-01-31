@@ -22,7 +22,7 @@ $(document).ready(function(){
             confWin = new confirmWindow({
               ws:ws
             });
-            console.log("onopen", iPads);
+
             makeStudentPage(ws);
 
         };
@@ -30,15 +30,16 @@ $(document).ready(function(){
         ws.onmessage = function(evt) {
             //console.log(evt);
             var sData = JSON.parse(evt.data);
-            console.log(sData);
+            //console.log(sData);
 
             //WHAT TO DO WHEN WE GET A MESSAGE FROM THE SERVER
             if (sData.info == 'sign in'){
-              window.alert(sData.msg);
+              //window.alert(sData.msg);
+              let mw = new messageWindow({ws:ws, msg:sData.msg});
             }
 
             if (sData.info == 'checkout'){
-              window.alert(sData.msg);
+              let mw = new messageWindow({ws:ws, msg:sData.msg});
             }
 
         };

@@ -40,6 +40,9 @@
   border: 4px outset grey;
   border-radius: 10px;
 }
+.bigButton:hover {
+  border: 4px inset grey;
+}
 .bigButtonTitle {
   font: small-caps 1.5em bold fantasy;
 }
@@ -101,4 +104,23 @@
 
 .item {
   background-color: lightblue;
+}
+
+.messageWindow {
+  position: fixed;
+  margin: auto;
+  width: 90%;
+  height: 90%;
+  background-color: lightpink;
+  text-align: center;
+  border: 1px solid black;
+}
+.message{
+  position: fixed;
+  margin: auto;
+  width: 80%;
+  top: 5em;
+  left: 2em;
+  font: small-caps 2em bold fantasy;
+  border: 1px solid black;
 }
