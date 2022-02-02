@@ -2,9 +2,57 @@ doc = document;
 studentPageDiv = doc.getElementById('students');
 
 class Student{
-  constructor({name="", classTime=[]} = {}){
-    this.name = name;
-    this.classTime = classTime;
+  constructor(student_info){
+    this.info = student_info;
+    //import all elements of info as properties
+    Object.entries(student_info).forEach(([key, value]) => {
+      this[key] = value;
+    })
+  }
+  makeDiv(parentDiv){
+    let div = doc.createElement('div');
+    div.classList.add("student");
+    div.setAttribute("id", `id_${this.id}`);
+
+    let bg;
+    switch(parseInt(this.grade)){
+      case 2021:
+        bg = '#ffb795';
+        break;
+      case 2022:
+        bg = '#ffec95';
+        break;
+      case 2023:
+        bg = '#d695ff';
+        break;
+      case 2024:
+        bg = '#95e6ff';
+        break;
+      default:
+        bg = '#ffea95';
+    }
+    div.style.backgroundColor = bg;
+
+    let nameDiv = doc.createElement('div');
+    nameDiv.classList.add("studentName");
+    nameDiv.innerHTML = this.name;
+    div.appendChild(nameDiv);
+
+    let timeDiv = doc.createElement('div');
+    timeDiv.classList.add("classTime");
+    let txt = '';
+    for (const dt of this.classTime) {
+      txt += `${dt.day} ${dt.time}<br>`;
+    }
+    timeDiv.innerHTML = txt;
+    div.appendChild(timeDiv);
+    parentDiv.appendChild(div);
+
+    //listener
+    div.addEventListener("click", () => {
+      confWin.makeWindow(this);
+    });
+    this.div = div;
   }
 }
 
@@ -250,55 +298,13 @@ function getTime(){
 
 //Load student data
 students = roll;
-// for (let i=0; i<roll.length; i++){
-//   students.push(new Student(roll[i]));
-// }
+
 
 function makeStudentPage(ws){
   //put students on page
   for (let i=0; i<students.length; i++){
-    let div = doc.createElement('div');
-    div.classList.add("student");
-    div.setAttribute("id", `id_${students[i].id}`);
-
-    let bg;
-    switch(parseInt(students[i].grade)){
-      case 2021:
-        bg = '#ffb795';
-        break;
-      case 2022:
-        bg = '#ffec95';
-        break;
-      case 2023:
-        bg = '#d695ff';
-        break;
-      case 2024:
-        bg = '#95e6ff';
-        break;
-      default:
-        bg = '#ffea95';
-    }
-    div.style.backgroundColor = bg;
-
-    let nameDiv = doc.createElement('div');
-    nameDiv.classList.add("studentName");
-    nameDiv.innerHTML = students[i].name;
-    div.appendChild(nameDiv);
-
-    let timeDiv = doc.createElement('div');
-    timeDiv.classList.add("classTime");
-    let txt = '';
-    for (const dt of students[i].classTime) {
-      txt += `${dt.day} ${dt.time}<br>`;
-    }
-    timeDiv.innerHTML = txt;
-    div.appendChild(timeDiv);
-    studentPageDiv.appendChild(div);
-
-    //listener
-    div.addEventListener("click", function(){
-      confWin.makeWindow(students[i]);
-    });
+    let s = new Student(students[i]);
+    s.makeDiv(studentPageDiv);
   }
 
 }
