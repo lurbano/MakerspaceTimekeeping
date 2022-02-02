@@ -16,24 +16,7 @@ class Student{
     div.classList.add("student");
     div.setAttribute("id", `id_${this.id}`);
 
-    let bg;
-    switch(parseInt(this.grade)){
-      case 2021:
-        bg = '#ffb795';
-        break;
-      case 2022:
-        bg = '#ffec95';
-        break;
-      case 2023:
-        bg = '#d695ff';
-        break;
-      case 2024:
-        bg = '#95e6ff';
-        break;
-      default:
-        bg = '#ffea95';
-    }
-    div.style.backgroundColor = bg;
+    div.style.backgroundColor = getStudentColorCode(this.grade);
 
     let nameDiv = doc.createElement('div');
     nameDiv.classList.add("studentName");
@@ -60,7 +43,48 @@ class Student{
     let sel = doc.createElement('option');
     sel.value = this.id;
     sel.text = this.name;
+    sel.style.backgroundColor = getStudentColorCode(this.grade);
     selDiv.add(sel);
+  }
+  outputTimes(loginTimes){
+    console.log('loginTimes', loginTimes)
+    console.log('loginTimes parsed', JSON.parse(loginTimes))
+    loginTimes = JSON.parse(loginTimes);
+    let loginTable = doc.createElement('table');
+
+    //Make header
+    let tHead = loginTable.createTHead();
+    let row = tHead.insertRow();
+
+    for (let key of Object.keys(loginTimes[0])){
+      let th = doc.createElement('th');
+      let txt = doc.createTextNode(key);
+      th.appendChild(txt);
+      row.appendChild(th);
+    }
+
+    //Table body
+    for (let element of loginTimes){
+      let row = loginTable.insertRow();
+
+      for (let key in element){
+        let cell = row.insertCell();
+        let val;
+        if (key == 'time'){
+          let t = getTime(element[key]);
+          val = t.short;
+        }
+        else {
+          val = element[key]
+        }
+        let txt = doc.createTextNode(val);
+        cell.appendChild(txt);
+      }
+    }
+
+
+    let outDiv = doc.getElementById("result");
+    outDiv.appendChild(loginTable);
   }
 }
 
@@ -292,19 +316,42 @@ function getCheckoutButton(title="Hello", type='iPad', className='iPadButton'){
 
 }
 
-function getTime(){
+function getTime(setTime = undefined){
   //time
-  let t = new Date();
+  let t = setTime === undefined ? new Date() : new Date(setTime);
   let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  let shortOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' , hour: '2-digit', minute: '2-digit'};
 
   let dt = {
     dateObject: t,
     date: t.toLocaleDateString('en-US', options),
+    short: t.toLocaleString('en-US', shortOptions),
     time: t.toLocaleTimeString()
   };
 
   return dt;
 
+}
+
+function getStudentColorCode(grade){
+  let bg;
+  switch(parseInt(grade)){
+    case 2021:
+      bg = '#ffb795';
+      break;
+    case 2022:
+      bg = '#ffec95';
+      break;
+    case 2023:
+      bg = '#d695ff';
+      break;
+    case 2024:
+      bg = '#95e6ff';
+      break;
+    default:
+      bg = '#ffea95';
+  }
+  return bg;
 }
 
 
@@ -374,17 +421,27 @@ students = new studentDB(roll);
 
 //ADMIN STUFF
 
-function studentPicker(){
+function studentPicker(ws){
   let queryDiv = doc.getElementById('query');
   let resultDiv = doc.getElementById('result');
   let selectBox = doc.createElement('select');
+  selectBox.setAttribute('id', 'selectStudent');
+  //default option:
+  let defOpt = doc.createElement('option');
+  defOpt.text = "Select Student";
+  defOpt.value = '';
+  selectBox.appendChild(defOpt);
+
   students.db.forEach(s => s.makeSelectOption(selectBox));
-  // for (let i=0; i<students.db.length; i++){
-  //   let s = students.db[i];
-  //   s.makeSelectOption(selectBox);
-  // }
+
   queryDiv.appendChild(selectBox);
-  selectBox.addEventListener('change', function(){
+
+  selectBox.addEventListener('change', function() {
     console.log("hi", this.value, students.getById(this.value));
+    let msg = {
+      what: "selectStudent",
+      studentId: this.value
+    };
+    ws.send(JSON.stringify(msg));
   })
 }

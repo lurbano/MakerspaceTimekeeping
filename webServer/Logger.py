@@ -1,5 +1,6 @@
 import time
 from tinydb import TinyDB, Query
+import json
 
 class studentLogger:
 
@@ -15,6 +16,17 @@ class studentLogger:
             self.handler.write_message({'info':'sign in', 'msg':info['action']+" successful."})
         except:
             self.handler.write_message({'info':'sign in', 'msg':"Error: Failed to sign in."})
+
+    def getAll(self, studentId):
+        studentId = int(studentId)
+        stu = Query()
+        result = self.timeDB.search(stu.id == studentId);
+        print(f'Student {studentId}:', result)
+        self.handler.write_message({
+                                    'info': 'login times',
+                                    'studentId': studentId,
+                                    'msg': json.dumps(result)
+                                  })
 
 
 class checkoutLogger:
