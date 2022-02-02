@@ -16,7 +16,19 @@
 
 .student_opts {
   display: grid;
+  grid-template-columns: repeat(5, 1fr);
+}
+
+#query {
+  display: grid;
   grid-template-columns: repeat(4, 1fr);
+}
+
+.queries {
+  border: thick double blue;
+  margin: 5px;
+  padding: 5px;
+  text-align: center;
 }
 
 .studentName{
@@ -29,10 +41,10 @@
 
 #signIn{
   position: fixed;
-  top: 5%;
-  left: 5%;
-  width:90%;
-  height: 90%;
+  top: 1%;
+  left: 1%;
+  width:98%;
+  height: 98%;
   background-color: yellow;
   text-align: center;
 }
@@ -127,4 +139,14 @@
   left: 2em;
   font: small-caps 2em bold fantasy;
   border: 1px solid black;
+}
+
+table {
+  border: 1px solid black;
+}
+th {
+  border: 3px inset purple;
+}
+td {
+  border: 3px inset green;
 }

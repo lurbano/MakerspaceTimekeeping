@@ -25,13 +25,14 @@ $(document).ready(function(){
             });
 
             studentPicker(ws);
+            itemPicker('iPads');
 
         };
 
         ws.onmessage = function(evt) {
             //console.log(evt);
             var sData = JSON.parse(evt.data);
-            console.log('sData:', sData);
+            //console.log('sData:', sData);
 
             //WHAT TO DO WHEN WE GET A MESSAGE FROM THE SERVER
             if (sData.info == 'sign in'){

@@ -47,8 +47,7 @@ class Student{
     selDiv.add(sel);
   }
   outputTimes(loginTimes){
-    console.log('loginTimes', loginTimes)
-    console.log('loginTimes parsed', JSON.parse(loginTimes))
+
     loginTimes = JSON.parse(loginTimes);
     let loginTable = doc.createElement('table');
 
@@ -58,21 +57,26 @@ class Student{
 
     for (let key of Object.keys(loginTimes[0])){
       let th = doc.createElement('th');
-      let txt = doc.createTextNode(key);
+      let txt = key == 'time' ? doc.createTextNode('Date') : doc.createTextNode(key);
       th.appendChild(txt);
       row.appendChild(th);
     }
+    let th = doc.createElement('th');
+    let txt = doc.createTextNode('Time');
+    th.appendChild(txt);
+    row.appendChild(th);
 
     //Table body
-    for (let element of loginTimes){
+    let t;
+    for (let element of loginTimes.reverse()){
       let row = loginTable.insertRow();
 
       for (let key in element){
         let cell = row.insertCell();
         let val;
         if (key == 'time'){
-          let t = getTime(element[key]);
-          val = t.short;
+          t = getTime(element[key]);
+          val = t.shortDate;
         }
         else {
           val = element[key]
@@ -80,10 +84,17 @@ class Student{
         let txt = doc.createTextNode(val);
         cell.appendChild(txt);
       }
+      let cell = row.insertCell();
+      let txt = doc.createTextNode(t.time);
+      cell.appendChild(txt);
     }
 
 
+
     let outDiv = doc.getElementById("result");
+    let h = doc.createElement('h3');
+    h.innerHTML = "Login/Logout";
+    outDiv.replaceChildren(h);
     outDiv.appendChild(loginTable);
   }
 }
@@ -94,7 +105,7 @@ class confirmWindow{
     this.parentDivId = parentDivId;
     this.divId = divId;
     this.ws = ws;
-    this.iPads = iPads;
+    this.iPads = iPads; //from iPads.js
 
     this.button = {};
 
@@ -136,9 +147,20 @@ class confirmWindow{
     this.makeSignInButton(optionsDiv, t, "Sign In");
     this.makeSignInButton(optionsDiv, t, "Sign Out");
 
-    //checkout
-    this.makeCheckoutButton(optionsDiv, t, 'iPad', "Check Out");
-    this.makeCheckoutButton(optionsDiv, t, 'iPad', "Check In");
+    //checkout buttons
+    let i = 0;
+    for (let item of Object.keys(inventory)){
+      i += 1;
+      this.makeCheckoutButton(optionsDiv, t, item, "Check Out", {row: 1, col:i});
+      this.makeCheckoutButton(optionsDiv, t, item, "Check In", {row: 2, col:i});
+    }
+
+    //checkout iPads
+    this.makeCheckoutButton(optionsDiv, t, 'iPads', "Check Out", {row: 1, col:1});
+    this.makeCheckoutButton(optionsDiv, t, 'iPads', "Check In", {row: 2, col:1});
+
+    this.makeCheckoutButton(optionsDiv, t, 'laptops', "Check Out", {row: 1, col:2});
+    this.makeCheckoutButton(optionsDiv, t, 'laptops', "Check In", {row: 2, col:2});
 
     this.div.appendChild(optionsDiv);
   }
@@ -146,11 +168,11 @@ class confirmWindow{
   makeSignInButton(div, t, action="Sign In"){
     let signInButton = getButton(action, t.time);
     if (action == 'Sign Out'){
-      signInButton.style.gridColumn = 2;
+      signInButton.style.gridColumn = 5;
       signInButton.style.gridRow = 2;
     }
     else if (action == 'Sign In'){
-      signInButton.style.gridColumn = 2;
+      signInButton.style.gridColumn = 5;
       signInButton.style.gridRow = 1;
     }
     div.appendChild(signInButton);
@@ -169,31 +191,25 @@ class confirmWindow{
     })
   }
 
-  makeCheckoutButton(div, t, item="iPad", action="Check Out"){
-    this.button[item] = getCheckoutButton(action, item);
+  makeCheckoutButton(div, t, item="iPads", action="Check Out", pos = {row:1, col:1}){
+    this.button[item] = getCheckoutButton(action, item.slice(0,-1));
 
-    if (action == 'Check Out'){
-      this.button[item].style.gridColumn = 3;
-      this.button[item].style.gridRow = 1;
-    }
-    else if (action == 'Check In'){
-      this.button[item].style.gridColumn = 3;
-      this.button[item].style.gridRow = 2;
-    }
+    this.button[item].style.gridColumn = pos.col;
+    this.button[item].style.gridRow = pos.row;
 
     div.appendChild(this.button[item]);
 
 
     this.button[item].addEventListener("click", () => {
 
-      if (item == 'iPad'){
-        var inventory = iPads; //from iPads.js
-      }
+      // if (item == 'iPads'){
+      //   var inventory = this.iPads;
+      // }
 
       let inventoryWindow = new checkoutControl({
         parentDiv: this.parentDiv,
         itemName: item,
-        items: inventory,
+        items: inventory[item],
         ws: this.ws,
         student: this.student,
         action: action
@@ -206,7 +222,7 @@ class confirmWindow{
 
 class checkoutControl{
   constructor({
-                itemName = "iPad",
+                itemName = "iPads",
                 items = iPads,
                 parentDiv = undefined,
                 ws = undefined,
@@ -320,11 +336,13 @@ function getTime(setTime = undefined){
   //time
   let t = setTime === undefined ? new Date() : new Date(setTime);
   let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  let shortDateOptions = { weekday: 'short', year: '2-digit', month: 'short', day: 'numeric'};
   let shortOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' , hour: '2-digit', minute: '2-digit'};
 
   let dt = {
     dateObject: t,
     date: t.toLocaleDateString('en-US', options),
+    shortDate: t.toLocaleDateString('en-US', shortDateOptions),
     short: t.toLocaleString('en-US', shortOptions),
     time: t.toLocaleTimeString()
   };
@@ -424,6 +442,16 @@ students = new studentDB(roll);
 function studentPicker(ws){
   let queryDiv = doc.getElementById('query');
   let resultDiv = doc.getElementById('result');
+  // //Title
+  let studentSelDiv = doc.createElement("div");
+  studentSelDiv.setAttribute('id', 'studentSelector');
+  studentSelDiv.classList.add('queries');
+  let title = doc.createElement('div');
+  title.innerHTML = 'Students';
+  studentSelDiv.appendChild(title);
+  queryDiv.appendChild(studentSelDiv);
+
+  //select box
   let selectBox = doc.createElement('select');
   selectBox.setAttribute('id', 'selectStudent');
   //default option:
@@ -434,10 +462,42 @@ function studentPicker(ws){
 
   students.db.forEach(s => s.makeSelectOption(selectBox));
 
-  queryDiv.appendChild(selectBox);
+  studentSelDiv.appendChild(selectBox);
 
   selectBox.addEventListener('change', function() {
-    console.log("hi", this.value, students.getById(this.value));
+    let msg = {
+      what: "selectStudent",
+      studentId: this.value
+    };
+    ws.send(JSON.stringify(msg));
+  })
+}
+
+function itemPicker(item, ws){
+  let queryDiv = doc.getElementById('query');
+  let resultDiv = doc.getElementById('result');
+  // //Title
+  let itemSelDiv = doc.createElement("div");
+  itemSelDiv.setAttribute('id', 'itemSelector');
+  itemSelDiv.classList.add('queries');
+  let title = doc.createElement('div');
+  title.innerHTML = item;
+  itemSelDiv.appendChild(title);
+  queryDiv.appendChild(itemSelDiv);
+
+  //select box
+  let selectBox = doc.createElement('select');
+  selectBox.setAttribute('id', `select${item}`);
+  //default option:
+  let defOpt = doc.createElement('option');
+  defOpt.text = "";
+  defOpt.value = '';
+  selectBox.appendChild(defOpt);
+
+  students.db.forEach(s => s.makeSelectOption(selectBox));
+  studentSelDiv.appendChild(selectBox);
+
+  selectBox.addEventListener('change', function() {
     let msg = {
       what: "selectStudent",
       studentId: this.value
