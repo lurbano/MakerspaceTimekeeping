@@ -59,6 +59,10 @@ class MainHandler(tornado.web.RequestHandler):
 		print ("[HTTP](MainHandler) User Connected.")
 		self.render("index.html")
 
+class AdminHandler(tornado.web.RequestHandler):
+	def get(self):
+		print ("[HTTP](AdminHandler) User Connected.")
+		self.render("admin.html")
 
 class WSHandler(tornado.websocket.WebSocketHandler):
 	def open(self):
@@ -106,6 +110,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 application = tornado.web.Application([
   (r'/', MainHandler),
   (r'/ws', WSHandler),
+  (r'/Admin', AdminHandler),
   ], **settings)
 
 

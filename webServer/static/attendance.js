@@ -55,6 +55,12 @@ class Student{
     });
     this.div = div;
   }
+  makeSelectOption(selDiv){
+    let sel = doc.createElement('option');
+    sel.value = this.id;
+    sel.text = this.name;
+    selDiv.add(sel);
+  }
 }
 
 class confirmWindow{
@@ -302,7 +308,7 @@ function getTime(){
 
 
 //Load student data
-students = roll;
+//students = roll;
 
 
 function makeStudentPage(ws){
@@ -341,4 +347,19 @@ class messageWindow{
     this.parentDiv.appendChild(this.window);
     openWindows.push(this.window);
   }
+}
+
+
+
+//ADMIN STUFF
+
+function studentPicker(){
+  let queryDiv = doc.getElementById('query');
+  let resultDiv = doc.getElementById('result');
+  let selectBox = doc.createElement('select');
+  for (let i=0; i<students.length; i++){
+    let s = new Student(students[i]);
+    s.makeSelectOption(selectBox);
+  }
+  queryDiv.appendChild(selectBox);
 }

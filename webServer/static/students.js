@@ -1,4 +1,4 @@
-var roll = [
+var students = [
   {
     name: 'Ella',
     id: 1,

@@ -24,7 +24,7 @@ $(document).ready(function(){
               ws:ws
             });
 
-            makeStudentPage(ws);
+            studentPicker();
 
         };
 
