@@ -2,6 +2,7 @@ doc = document;
 studentPageDiv = doc.getElementById('students');
 openWindows = [];
 
+
 class Student{
   constructor(student_info){
     this.info = student_info;
@@ -313,8 +314,8 @@ function getTime(){
 
 function makeStudentPage(ws){
   //put students on page
-  for (let i=0; i<students.length; i++){
-    let s = new Student(students[i]);
+  for (let i=0; i<students.db.length; i++){
+    let s = students.db[i];
     s.makeDiv(studentPageDiv);
   }
 
@@ -349,6 +350,26 @@ class messageWindow{
   }
 }
 
+class studentDB{
+  constructor(roll){
+    this.roll = roll;
+    this.db = [];
+    for (let i=0; i<roll.length; i++){
+      this.db.push( new Student(roll[i]) );
+    }
+    this.n = this.db.length;
+  }
+  getById(id){
+    id = parseInt(id);
+    for (let i=0; i<this.n; i++){
+      if (this.db[i].id === id){
+        return this.db[i];
+      }
+    }
+    return undefined;
+  }
+}
+students = new studentDB(roll);
 
 
 //ADMIN STUFF
@@ -357,9 +378,13 @@ function studentPicker(){
   let queryDiv = doc.getElementById('query');
   let resultDiv = doc.getElementById('result');
   let selectBox = doc.createElement('select');
-  for (let i=0; i<students.length; i++){
-    let s = new Student(students[i]);
-    s.makeSelectOption(selectBox);
-  }
+  students.db.forEach(s => s.makeSelectOption(selectBox));
+  // for (let i=0; i<students.db.length; i++){
+  //   let s = students.db[i];
+  //   s.makeSelectOption(selectBox);
+  // }
   queryDiv.appendChild(selectBox);
+  selectBox.addEventListener('change', function(){
+    console.log("hi", this.value, students.getById(this.value));
+  })
 }

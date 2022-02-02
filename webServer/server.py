@@ -69,6 +69,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 		print ('[WS] Connection was opened.')
 		self.write_message('{"who": "server", "info": "on"}')
 		#self.oled = oledU(128,32)
+		self.stuLog = studentLogger(self, db_directory)
 
 
 	async def on_message(self, message):
@@ -84,12 +85,12 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 			# 	self.write_message({"info": "hello", "reply":r})
 
 			if msg["what"] == "sign in":
-				stuLog = studentLogger(self, db_directory)
-				stuLog.logSignIn(msg['info'])
+
+				self.stuLog.logSignIn(msg['info'])
 
 			if msg['what'] == 'checkout':
-				logger = checkoutLogger(self, db_directory)
-				logger.checkout(msg['info'])
+				self.logger = checkoutLogger(self, db_directory)
+				self.logger.checkout(msg['info'])
 
 
 			# if msg["what"] == "reboot":
