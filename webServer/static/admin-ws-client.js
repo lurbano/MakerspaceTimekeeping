@@ -25,14 +25,18 @@ $(document).ready(function(){
             });
 
             studentPicker(ws);
-            itemPicker('iPads');
+
+            for (let item of Object.keys(inventory)){
+              itemPicker(ws, item);
+            }
+
 
         };
 
         ws.onmessage = function(evt) {
             //console.log(evt);
             var sData = JSON.parse(evt.data);
-            //console.log('sData:', sData);
+            console.log('sData:', sData);
 
             //WHAT TO DO WHEN WE GET A MESSAGE FROM THE SERVER
             if (sData.info == 'sign in'){
@@ -48,6 +52,14 @@ $(document).ready(function(){
             if (sData.info == 'login times'){
               let stu = students.getById(sData.studentId);
               stu.outputTimes(sData.msg);
+            }
+
+            if (sData.info == 'selectItemData'){
+              data = JSON.parse(sData.msg);
+              // console.log("Data: ", data);
+              let i = itemDBs[sData.itemType].getById(sData.id);
+              i.checkoutTable(sData.msg);
+              //stu.outputTimes(sData.msg);
             }
 
         };

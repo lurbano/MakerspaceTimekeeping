@@ -43,7 +43,21 @@ class checkoutLogger:
 
         try:
             self.logDB.insert(info)
+
             self.handler.write_message({'info':'checkout', 'msg':f'{info["action"]} of {info["itemType"]} ({info["item"]}) by {info["name"]} successful'})
 
         except:
             self.handler.write_message({'info':'checkout', 'msg':"Error: Failed to Check In/Out"})
+
+    def getAll(self, info):
+        self.logDB = TinyDB(f'{self.db_dir}{info["itemType"]}.json')
+        id = int(info['id'])
+        items = Query()
+        result = self.logDB.search(items.itemId == id);
+        # print(f'Item {info["itemType"]}:', result)
+        self.handler.write_message({
+            'info': 'selectItemData',
+            'itemType': info['itemType'],
+            'id': id,
+            'msg': json.dumps(result)
+        })

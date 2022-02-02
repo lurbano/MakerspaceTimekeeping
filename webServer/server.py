@@ -96,6 +96,12 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 				self.stuLog.getAll(msg['studentId'])
 				print('selecting student', msg['studentId'])
 
+			if msg['what'] == 'selectItemData':
+				print("selectItemData:", msg)
+				logger = checkoutLogger(self, db_directory)
+				logger.getAll(msg)
+				# print('selecting student', msg['studentId'])
+
 			# if msg["what"] == "reboot":
 			# 	subprocess.Popen('sleep 5 ; sudo reboot', shell=True)
 			# 	main_loop.stop()

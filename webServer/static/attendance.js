@@ -156,11 +156,11 @@ class confirmWindow{
     }
 
     //checkout iPads
-    this.makeCheckoutButton(optionsDiv, t, 'iPads', "Check Out", {row: 1, col:1});
-    this.makeCheckoutButton(optionsDiv, t, 'iPads', "Check In", {row: 2, col:1});
-
-    this.makeCheckoutButton(optionsDiv, t, 'laptops', "Check Out", {row: 1, col:2});
-    this.makeCheckoutButton(optionsDiv, t, 'laptops', "Check In", {row: 2, col:2});
+    // this.makeCheckoutButton(optionsDiv, t, 'iPads', "Check Out", {row: 1, col:1});
+    // this.makeCheckoutButton(optionsDiv, t, 'iPads', "Check In", {row: 2, col:1});
+    //
+    // this.makeCheckoutButton(optionsDiv, t, 'laptops', "Check Out", {row: 1, col:2});
+    // this.makeCheckoutButton(optionsDiv, t, 'laptops', "Check In", {row: 2, col:2});
 
     this.div.appendChild(optionsDiv);
   }
@@ -260,8 +260,9 @@ class checkoutControl{
             action: this.action,
             itemType: this.itemName,
             name: this.student.name,
-            id: this.student.id,
+            studentId: this.student.id,
             item: this.items[i].name,
+            itemId: this.items[i].id,
             time: t.dateObject.toJSON()
           }
         };
@@ -415,6 +416,8 @@ class messageWindow{
   }
 }
 
+
+
 class studentDB{
   constructor(roll){
     this.roll = roll;
@@ -435,6 +438,137 @@ class studentDB{
   }
 }
 students = new studentDB(roll);
+
+
+
+class Item{
+  constructor(info){
+    this.info = info;
+    //import all elements of info as properties
+    Object.entries(info).forEach(([key, value]) => {
+      this[key] = value;
+    })
+  }
+
+  makeSelectOption(selDiv){
+    let sel = doc.createElement('option');
+    sel.value = this.id;
+    sel.text = this.name;
+    selDiv.add(sel);
+  }
+
+  checkoutTable(data){
+
+    data = JSON.parse(data);
+    console.log("Item Data: ", data);
+    // let loginTable = doc.createElement('table');
+    //
+    // //Make header
+    // let tHead = loginTable.createTHead();
+    // let row = tHead.insertRow();
+    //
+    // for (let key of Object.keys(loginTimes[0])){
+    //   let th = doc.createElement('th');
+    //   let txt = key == 'time' ? doc.createTextNode('Date') : doc.createTextNode(key);
+    //   th.appendChild(txt);
+    //   row.appendChild(th);
+    // }
+    // let th = doc.createElement('th');
+    // let txt = doc.createTextNode('Time');
+    // th.appendChild(txt);
+    // row.appendChild(th);
+    //
+    // //Table body
+    // let t;
+    // for (let element of loginTimes.reverse()){
+    //   let row = loginTable.insertRow();
+    //
+    //   for (let key in element){
+    //     let cell = row.insertCell();
+    //     let val;
+    //     if (key == 'time'){
+    //       t = getTime(element[key]);
+    //       val = t.shortDate;
+    //     }
+    //     else {
+    //       val = element[key]
+    //     }
+    //     let txt = doc.createTextNode(val);
+    //     cell.appendChild(txt);
+    //   }
+    //   let cell = row.insertCell();
+    //   let txt = doc.createTextNode(t.time);
+    //   cell.appendChild(txt);
+    // }
+  }
+}
+
+
+
+class itemDB{
+  constructor(items = iPads){
+    this.items = items;
+    this.db = [];
+    for (let i=0; i<this.items.length; i++){
+      this.db.push( new Item(this.items[i]) );
+    }
+    this.n = this.db.length;
+  }
+  getById(id){
+    id = parseInt(id);
+    for (let i=0; i<this.n; i++){
+      if (this.db[i].id === id){
+        return this.db[i];
+      }
+    }
+    return undefined;
+  }
+}
+itemDBs = {};
+for (let item of Object.keys(inventory)){
+  console.log(item);
+  itemDBs[item] = new itemDB(inventory[item]);
+}
+
+
+function itemPicker(ws, item='iPads'){
+  //let items = inventory[item];
+  //this.items = new itemDB(inventory[item]);
+  items = itemDBs[item];
+
+  let queryDiv = doc.getElementById('query');
+  let resultDiv = doc.getElementById('result');
+  // //Title
+  let itemSelDiv = doc.createElement("div");
+  itemSelDiv.setAttribute('id', 'itemSelector');
+  itemSelDiv.classList.add('queries');
+  let title = doc.createElement('div');
+  title.innerHTML = item;
+  itemSelDiv.appendChild(title);
+  queryDiv.appendChild(itemSelDiv);
+
+  //select box
+  let selectBox = doc.createElement('select');
+  selectBox.setAttribute('id', `select${item}`);
+  //default option:
+  let defOpt = doc.createElement('option');
+  defOpt.text = `Select ${item.slice(0,-1)}`;
+  defOpt.value = ``;
+  selectBox.appendChild(defOpt);
+
+  items.db.forEach(i => i.makeSelectOption(selectBox));
+
+  itemSelDiv.appendChild(selectBox);
+
+  selectBox.addEventListener('change', function() {
+    let msg = {
+      what: "selectItemData",
+      itemType: item,
+      id: this.value
+    };
+    ws.send(JSON.stringify(msg));
+  })
+}
 
 
 //ADMIN STUFF
@@ -462,39 +596,6 @@ function studentPicker(ws){
 
   students.db.forEach(s => s.makeSelectOption(selectBox));
 
-  studentSelDiv.appendChild(selectBox);
-
-  selectBox.addEventListener('change', function() {
-    let msg = {
-      what: "selectStudent",
-      studentId: this.value
-    };
-    ws.send(JSON.stringify(msg));
-  })
-}
-
-function itemPicker(item, ws){
-  let queryDiv = doc.getElementById('query');
-  let resultDiv = doc.getElementById('result');
-  // //Title
-  let itemSelDiv = doc.createElement("div");
-  itemSelDiv.setAttribute('id', 'itemSelector');
-  itemSelDiv.classList.add('queries');
-  let title = doc.createElement('div');
-  title.innerHTML = item;
-  itemSelDiv.appendChild(title);
-  queryDiv.appendChild(itemSelDiv);
-
-  //select box
-  let selectBox = doc.createElement('select');
-  selectBox.setAttribute('id', `select${item}`);
-  //default option:
-  let defOpt = doc.createElement('option');
-  defOpt.text = "";
-  defOpt.value = '';
-  selectBox.appendChild(defOpt);
-
-  students.db.forEach(s => s.makeSelectOption(selectBox));
   studentSelDiv.appendChild(selectBox);
 
   selectBox.addEventListener('change', function() {
