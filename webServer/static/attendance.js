@@ -1,5 +1,6 @@
 doc = document;
 studentPageDiv = doc.getElementById('students');
+openWindows = [];
 
 class Student{
   constructor(student_info){
@@ -93,6 +94,7 @@ class confirmWindow{
     this.makeOptions(t);
 
     this.parentDiv.appendChild(this.div);
+    openWindows.push(this.div);
   }
 
   makeOptions(t){
@@ -221,10 +223,11 @@ class checkoutControl{
     }
 
     this.parentDiv.appendChild(this.window);
+    openWindows.push(this.window);
   }
 }
 class cancelButton{
-  constructor(parentDiv){
+  constructor(parentDiv = undefined){
     this.parentDiv = parentDiv;
     this.button = doc.createElement("input");
     this.button.setAttribute("type", "button");
@@ -234,7 +237,10 @@ class cancelButton{
     this.parentDiv.appendChild(this.button);
 
     this.button.addEventListener('click', () => {
-      this.parentDiv.remove();
+      //this.parentDiv.remove();
+
+      openWindows.forEach(div => div.remove());
+      openWindows = [];
 
     })
     //return this.button;
@@ -294,7 +300,6 @@ function getTime(){
 
 }
 
-// confWin = new confirmWindow();
 
 //Load student data
 students = roll;
@@ -334,5 +339,6 @@ class messageWindow{
     this.window.appendChild(m);
 
     this.parentDiv.appendChild(this.window);
+    openWindows.push(this.window);
   }
 }
