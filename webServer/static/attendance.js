@@ -46,56 +46,26 @@ class Student{
     sel.style.backgroundColor = getStudentColorCode(this.grade);
     selDiv.add(sel);
   }
-  outputTimes(loginTimes){
-
-    loginTimes = JSON.parse(loginTimes);
-    let loginTable = doc.createElement('table');
-
-    //Make header
-    let tHead = loginTable.createTHead();
-    let row = tHead.insertRow();
-
-    for (let key of Object.keys(loginTimes[0])){
-      let th = doc.createElement('th');
-      let txt = key == 'time' ? doc.createTextNode('Date') : doc.createTextNode(key);
-      th.appendChild(txt);
-      row.appendChild(th);
-    }
-    let th = doc.createElement('th');
-    let txt = doc.createTextNode('Time');
-    th.appendChild(txt);
-    row.appendChild(th);
-
-    //Table body
-    let t;
-    for (let element of loginTimes.reverse()){
-      let row = loginTable.insertRow();
-
-      for (let key in element){
-        let cell = row.insertCell();
-        let val;
-        if (key == 'time'){
-          t = getTime(element[key]);
-          val = t.shortDate;
-        }
-        else {
-          val = element[key]
-        }
-        let txt = doc.createTextNode(val);
-        cell.appendChild(txt);
-      }
-      let cell = row.insertCell();
-      let txt = doc.createTextNode(t.time);
-      cell.appendChild(txt);
-    }
-
-
+  outputTable(loginTimes){
 
     let outDiv = doc.getElementById("result");
     let h = doc.createElement('h3');
     h.innerHTML = "Login/Logout";
     outDiv.replaceChildren(h);
-    outDiv.appendChild(loginTable);
+
+    loginTimes = JSON.parse(loginTimes);
+
+    if (loginTimes.length === 0) {
+      let dataDiv = doc.createElement('div');
+      dataDiv.innerHTML = `No login data`;
+      outDiv.appendChild(dataDiv);
+    }
+    else {
+      loginTimes = splitDateTimeInArray(loginTimes);
+
+      this.table = makeTable(outDiv, loginTimes);
+    }
+
   }
 }
 
@@ -389,8 +359,48 @@ function getStudentColorCode(grade){
 }
 
 
-//Load student data
-//students = roll;
+function makeTable(parentDiv, a = [], props = [], reverse = true){
+  // default props makes table  of all properties
+
+
+  // do all properties
+  if (props.length === 0){ props = Object.keys(a[0]); }
+  //reverse data
+  let data = reverse ? a.reverse() : a;
+
+  let table = doc.createElement('table');
+
+  //Make header
+  let tHead = table.createTHead();
+  let row = tHead.insertRow();
+  for (let h of props){
+    let th = doc.createElement('th');
+    let txt = doc.createTextNode(h);
+    th.appendChild(txt);
+    row.appendChild(th);
+  }
+
+  //Table body
+  let t;
+  for (let element of data){
+    let row = table.insertRow();
+    //console.log('Element:', element)
+    for (let key of props){
+      //console.log("   key: ", key)
+      let cell = row.insertCell();
+      let txt = doc.createTextNode(element[key]);
+      cell.appendChild(txt);
+    }
+  }
+
+  parentDiv.appendChild(table);
+
+  return table;
+
+}
+
+
+
 
 
 function makeStudentPage(ws){
@@ -482,36 +492,11 @@ class Item{
     let resultTable = doc.createElement('table');
 
     let tableProps = ['action', 'name', 'studentId', 'Date', 'Time'];
-
-    //Make header
-    let tHead = resultTable.createTHead();
-    let row = tHead.insertRow();
-    for (let h of tableProps){
-      let th = doc.createElement('th');
-      let txt = doc.createTextNode(h);
-      th.appendChild(txt);
-      row.appendChild(th);
-    }
-
-    //Table body
-    let t;
-    for (let element of data.reverse()){
-      let row = resultTable.insertRow();
-      //console.log('Element:', element)
-      for (let key of tableProps){
-        //console.log("   key: ", key)
-        let cell = row.insertCell();
-        let txt = doc.createTextNode(element[key]);
-        cell.appendChild(txt);
-      }
-    }
-
-    console.log(this);
     let outDiv = doc.getElementById("result");
     let h = doc.createElement('h3');
     h.innerHTML = `Check In/Out ${this.itemType}[${this.id}]: ${this.name}`;
     outDiv.replaceChildren(h);
-    outDiv.appendChild(resultTable);
+    makeTable(outDiv, data, tableProps, true);
 
   }
 }
@@ -544,8 +529,22 @@ class itemDB{
     }
     return names;
   }
-  checkoutStatusTable(msg){
+  checkoutStatusTable(msg, itemType){
     console.log('checkoutStatusTable', msg);
+
+    let outDiv = doc.getElementById("result");
+    let h = doc.createElement('h3');
+    h.innerHTML = `${itemType} Status`;
+    outDiv.replaceChildren(h);
+
+    let data = JSON.parse(msg);
+
+    data = splitDateTimeInArray(data);
+
+    let props = ['item', 'name', 'action', 'Time', 'Date']
+
+    let table = makeTable(outDiv, data, props, false);
+
   }
 }
 itemDBs = {};

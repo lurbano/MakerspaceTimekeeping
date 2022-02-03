@@ -47,7 +47,7 @@ class checkoutLogger:
             self.handler.write_message({'info':'checkout', 'msg':f'{info["action"]} of {info["itemType"]} ({info["item"]}) by {info["name"]} successful'})
 
         except:
-            self.handler.write_message({'info':'checkout', 'msg':"Error: Failed to Check In/Out"})
+            self.handler.write_message({'info':'checkout', 'msg':"Error: Failed to Check In/Out (checkoutLogger)"})
 
     def getAll(self, info):
         self.logDB = TinyDB(f'{self.db_dir}{info["itemType"]}.json')
@@ -63,21 +63,27 @@ class checkoutLogger:
         })
 
     def getLastStatus(self, msg):
-        itemType = msg['itemType']
-        itemNames = msg['itemNames']
-        logDB = TinyDB(f'{self.db_dir}{msg["itemType"]}.json')
-        status = Query()
 
-        finalStatus = []
+        try:
+            itemType = msg['itemType']
+            itemNames = msg['itemNames']
+            logDB = TinyDB(f'{self.db_dir}{msg["itemType"]}.json')
+            status = Query()
 
-        for name in itemNames:
-            #print(name)
-            result = logDB.search(status.item == name)
-            #print(result[-1])
-            finalStatus.append(result[-1])
+            finalStatus = []
 
-        self.handler.write_message({
-            'info': 'lastStatus',
-            'itemType': itemType,
-            'msg': json.dumps(finalStatus)
-        })
+            for name in itemNames:
+                #print("name:", name)
+                result = logDB.search(status.item == name)
+                #print("Last Result:", result)
+                if (len(result) > 0):
+                    finalStatus.append(result[-1])
+
+            self.handler.write_message({
+                'info': 'lastStatus',
+                'itemType': itemType,
+                'msg': json.dumps(finalStatus)
+            })
+        except:
+            print("Error: Failed to get last status from database (getLastStatus)")
+            #self.handler.write_message({'info':'checkout', 'msg':"Error: Failed to get last status from database (getLastStatus)"})

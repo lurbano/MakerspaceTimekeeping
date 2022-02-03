@@ -51,7 +51,7 @@ $(document).ready(function(){
 
             if (sData.info == 'login times'){
               let stu = students.getById(sData.studentId);
-              stu.outputTimes(sData.msg);
+              stu.outputTable(sData.msg);
             }
 
             if (sData.info == 'selectItemData'){
@@ -59,15 +59,13 @@ $(document).ready(function(){
               // console.log("Data: ", data);
               let i = itemDBs[sData.itemType].getById(sData.id);
               i.checkoutTable(sData.msg);
-              //stu.outputTimes(sData.msg);
             }
 
             if (sData.info == 'lastStatus'){
               data = JSON.parse(sData.msg);
               // console.log("Data: ", data);
               let db = itemDBs[sData.itemType];
-              db.checkoutStatusTable(sData.msg);
-              //stu.outputTimes(sData.msg);
+              db.checkoutStatusTable(sData.msg, sData.itemType);
             }
 
         };

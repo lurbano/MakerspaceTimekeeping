@@ -165,6 +165,9 @@ th {
 td {
   border: 3px inset green;
 }
+tr:hover {
+  background-color: yellow;
+}
 
 select {
   height: 2em;
