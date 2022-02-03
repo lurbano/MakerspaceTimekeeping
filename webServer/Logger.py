@@ -61,3 +61,23 @@ class checkoutLogger:
             'id': id,
             'msg': json.dumps(result)
         })
+
+    def getLastStatus(self, msg):
+        itemType = msg['itemType']
+        itemNames = msg['itemNames']
+        logDB = TinyDB(f'{self.db_dir}{msg["itemType"]}.json')
+        status = Query()
+
+        finalStatus = []
+
+        for name in itemNames:
+            #print(name)
+            result = logDB.search(status.item == name)
+            #print(result[-1])
+            finalStatus.append(result[-1])
+
+        self.handler.write_message({
+            'info': 'lastStatus',
+            'itemType': itemType,
+            'msg': json.dumps(finalStatus)
+        })

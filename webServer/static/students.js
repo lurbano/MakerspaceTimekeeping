@@ -148,5 +148,15 @@ var roll = [
     name: 'Ava',
     id: 30,
     grade: 2024,
+    classTime: []},
+  {
+    name: 'Bryce',
+    id: 31,
+    grade: 2022,
+    classTime: []},
+  {
+    name: 'Harley',
+    id: 30,
+    grade: 2023,
     classTime: []}
 ];

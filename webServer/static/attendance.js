@@ -537,6 +537,16 @@ class itemDB{
     }
     return undefined;
   }
+  getItemNames(){
+    let names = [];
+    for (let item of this.db){
+      names.push(item.name);
+    }
+    return names;
+  }
+  checkoutStatusTable(msg){
+    console.log('checkoutStatusTable', msg);
+  }
 }
 itemDBs = {};
 for (let item of Object.keys(inventory)){
@@ -582,6 +592,23 @@ function itemPicker(ws, item='iPads'){
     };
     ws.send(JSON.stringify(msg));
   })
+
+  //All status button
+  let lastStatusButton = doc.createElement('div');
+  lastStatusButton.innerHTML = `${item} status`;
+  lastStatusButton.classList.add('mediumButton');
+  lastStatusButton.addEventListener('click', function(){
+    let msg = {
+      what: "lastStatus",
+      itemType: item,
+      itemNames: itemDBs[item].getItemNames()
+    }
+    ws.send(JSON.stringify(msg));
+  })
+
+  itemSelDiv.appendChild(lastStatusButton);
+
+
 }
 
 

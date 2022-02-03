@@ -62,6 +62,14 @@ $(document).ready(function(){
               //stu.outputTimes(sData.msg);
             }
 
+            if (sData.info == 'lastStatus'){
+              data = JSON.parse(sData.msg);
+              // console.log("Data: ", data);
+              let db = itemDBs[sData.itemType];
+              db.checkoutStatusTable(sData.msg);
+              //stu.outputTimes(sData.msg);
+            }
+
         };
 
         ws.onclose = function(evt) {
