@@ -126,11 +126,16 @@
 
 .inventoryWindow {
   position: fixed;
-  margin: auto;
-  width: 90%;
-  height: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  top: 2%;
+  bottom: 2%;
+  width: 96%;
+  height: 96%;
   background-color: lightgreen;
   text-align: center;
+  border: 5px inset lightblue;
+  border-radius: 10px;
 }
 
 .item {

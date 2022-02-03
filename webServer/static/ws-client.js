@@ -43,6 +43,14 @@ $(document).ready(function(){
               let mw = new messageWindow({ws:ws, msg:sData.msg});
             }
 
+            if (sData.info == 'lastStatus'){
+              data = JSON.parse(sData.msg);
+              //console.log("lastStatus Data: ", data);
+              //let db = itemDBs[sData.itemType];
+              //populate info divs
+              populateItemStatus(data);
+            }
+
         };
 
         ws.onclose = function(evt) {

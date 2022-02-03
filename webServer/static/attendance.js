@@ -1,6 +1,7 @@
 doc = document;
 studentPageDiv = doc.getElementById('students');
 openWindows = [];
+latestCheckout = [];
 
 
 class Student{
@@ -125,18 +126,14 @@ class confirmWindow{
       this.makeCheckoutButton(optionsDiv, t, item, "Check In", {row: 2, col:i});
     }
 
-    //checkout iPads
-    // this.makeCheckoutButton(optionsDiv, t, 'iPads', "Check Out", {row: 1, col:1});
-    // this.makeCheckoutButton(optionsDiv, t, 'iPads', "Check In", {row: 2, col:1});
-    //
-    // this.makeCheckoutButton(optionsDiv, t, 'laptops', "Check Out", {row: 1, col:2});
-    // this.makeCheckoutButton(optionsDiv, t, 'laptops', "Check In", {row: 2, col:2});
-
     this.div.appendChild(optionsDiv);
   }
 
   makeSignInButton(div, t, action="Sign In"){
-    let signInButton = getButton(action, t.time);
+    let signInButton = getButton({
+                          title: action,
+                          info:t.time
+                        });
     if (action == 'Sign Out'){
       signInButton.style.gridColumn = 5;
       signInButton.style.gridRow = 2;
@@ -162,7 +159,11 @@ class confirmWindow{
   }
 
   makeCheckoutButton(div, t, item="iPads", action="Check Out", pos = {row:1, col:1}){
-    this.button[item] = getCheckoutButton(action, item.slice(0,-1));
+
+    this.button[item] = getCheckoutButton({
+      title: action,
+      type: item.slice(0,-1)
+    });
 
     this.button[item].style.gridColumn = pos.col;
     this.button[item].style.gridRow = pos.row;
@@ -215,13 +216,16 @@ class checkoutControl{
     this.cancelBut = new cancelButton(this.window);
 
     for (let i = 0; i < this.items.length; i++){
-      this.items[i].button = getButton(this.items[i].name);
-      //this.items[i].button = doc.createElement('div');
+      this.items[i].button = getButton({
+                                title: this.items[i].name,
+                                infoId: `${this.itemName}-${this.items[i].id}`
+                              });
       this.items[i].button.classList.add('item');
-      //this.items[i].button.innerHTML = this.items[i].name;
+
       this.window.append(this.items[i].button);
 
       this.items[i].button.addEventListener("click", () => {
+
         console.log( `${this.student.name} checking out ${this.items[i].name}`);
         let t = getTime();
         let msg = {
@@ -238,10 +242,15 @@ class checkoutControl{
         };
         this.ws.send(JSON.stringify(msg));
       });
+
     }
 
     this.parentDiv.appendChild(this.window);
     openWindows.push(this.window);
+
+    //get last status info
+    getCheckoutInfoForUser(this.ws, this.itemName);
+
   }
 }
 class cancelButton{
@@ -266,7 +275,12 @@ class cancelButton{
 }
 
 
-function getButton(title="Hello", info="-", className="bigButton"){
+function getButton({
+            title="Hello",
+            info="-",
+            className="bigButton",
+            infoId = "infoButton"
+          }={}){
   let button = doc.createElement('div');
   button.classList.add(className);
 
@@ -277,6 +291,7 @@ function getButton(title="Hello", info="-", className="bigButton"){
 
   let infoDiv = doc.createElement('div');
   infoDiv.classList.add("bigButtonInfo");
+  infoDiv.setAttribute("id", infoId);
   infoDiv.innerHTML = info;
   button.appendChild(infoDiv);
 
@@ -284,7 +299,11 @@ function getButton(title="Hello", info="-", className="bigButton"){
 
 }
 
-function getCheckoutButton(title="Hello", type='iPad', className='iPadButton'){
+function getCheckoutButton({
+            title="Hello",
+            type='iPad',
+            className='iPadButton'
+          } = {}){
   let button = doc.createElement('div');
 
   button.classList.add(className);
@@ -399,7 +418,22 @@ function makeTable(parentDiv, a = [], props = [], reverse = true){
 
 }
 
-
+function getCheckoutInfoForUser(ws, itemType){
+  let msg = {
+    what: "lastStatus",
+    itemType: itemType,
+    itemNames: itemDBs[itemType].getItemNames()
+  }
+  ws.send(JSON.stringify(msg));
+}
+function populateItemStatus(data){
+  for (let i=0; i<data.length; i++){
+    let id = `${data[i].itemType}-${data[i].itemId}`;
+    let div = doc.getElementById(id);
+    let txt = data[i].action.split(" ")[1];
+    div.innerHTML = `${txt}: ${data[i].name}`;
+  }
+}
 
 
 
@@ -530,7 +564,6 @@ class itemDB{
     return names;
   }
   checkoutStatusTable(msg, itemType){
-    console.log('checkoutStatusTable', msg);
 
     let outDiv = doc.getElementById("result");
     let h = doc.createElement('h3');
