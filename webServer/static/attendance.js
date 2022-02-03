@@ -352,6 +352,21 @@ function getTime(setTime = undefined){
 
 }
 
+function splitDateTime(t){
+  let tv = getTime(t);
+  return({
+    Time: tv.time,
+    Date: tv.shortDate
+  });
+}
+
+function splitDateTimeInArray(a=[]){
+  for (let i=0; i<a.length; i++){
+    a[i] = {...a[i], ...splitDateTime(a[i].time)};
+  }
+  return a;
+}
+
 function getStudentColorCode(grade){
   let bg;
   switch(parseInt(grade)){
@@ -442,12 +457,13 @@ students = new studentDB(roll);
 
 
 class Item{
-  constructor(info){
+  constructor(info, itemType){
     this.info = info;
     //import all elements of info as properties
     Object.entries(info).forEach(([key, value]) => {
       this[key] = value;
     })
+    this.itemType = itemType;
   }
 
   makeSelectOption(selDiv){
@@ -460,57 +476,55 @@ class Item{
   checkoutTable(data){
 
     data = JSON.parse(data);
+    data = splitDateTimeInArray(data);
     console.log("Item Data: ", data);
-    // let loginTable = doc.createElement('table');
-    //
-    // //Make header
-    // let tHead = loginTable.createTHead();
-    // let row = tHead.insertRow();
-    //
-    // for (let key of Object.keys(loginTimes[0])){
-    //   let th = doc.createElement('th');
-    //   let txt = key == 'time' ? doc.createTextNode('Date') : doc.createTextNode(key);
-    //   th.appendChild(txt);
-    //   row.appendChild(th);
-    // }
-    // let th = doc.createElement('th');
-    // let txt = doc.createTextNode('Time');
-    // th.appendChild(txt);
-    // row.appendChild(th);
-    //
-    // //Table body
-    // let t;
-    // for (let element of loginTimes.reverse()){
-    //   let row = loginTable.insertRow();
-    //
-    //   for (let key in element){
-    //     let cell = row.insertCell();
-    //     let val;
-    //     if (key == 'time'){
-    //       t = getTime(element[key]);
-    //       val = t.shortDate;
-    //     }
-    //     else {
-    //       val = element[key]
-    //     }
-    //     let txt = doc.createTextNode(val);
-    //     cell.appendChild(txt);
-    //   }
-    //   let cell = row.insertCell();
-    //   let txt = doc.createTextNode(t.time);
-    //   cell.appendChild(txt);
-    // }
+
+    let resultTable = doc.createElement('table');
+
+    let tableProps = ['action', 'name', 'studentId', 'Date', 'Time'];
+
+    //Make header
+    let tHead = resultTable.createTHead();
+    let row = tHead.insertRow();
+    for (let h of tableProps){
+      let th = doc.createElement('th');
+      let txt = doc.createTextNode(h);
+      th.appendChild(txt);
+      row.appendChild(th);
+    }
+
+    //Table body
+    let t;
+    for (let element of data.reverse()){
+      let row = resultTable.insertRow();
+      //console.log('Element:', element)
+      for (let key of tableProps){
+        //console.log("   key: ", key)
+        let cell = row.insertCell();
+        let txt = doc.createTextNode(element[key]);
+        cell.appendChild(txt);
+      }
+    }
+
+    console.log(this);
+    let outDiv = doc.getElementById("result");
+    let h = doc.createElement('h3');
+    h.innerHTML = `Check In/Out ${this.itemType}[${this.id}]: ${this.name}`;
+    outDiv.replaceChildren(h);
+    outDiv.appendChild(resultTable);
+
   }
 }
 
 
 
 class itemDB{
-  constructor(items = iPads){
+  constructor(items = iPads, itemType="iPads"){
     this.items = items;
+    this.itemType = itemType;
     this.db = [];
     for (let i=0; i<this.items.length; i++){
-      this.db.push( new Item(this.items[i]) );
+      this.db.push( new Item(this.items[i], itemType) );
     }
     this.n = this.db.length;
   }
@@ -527,7 +541,7 @@ class itemDB{
 itemDBs = {};
 for (let item of Object.keys(inventory)){
   console.log(item);
-  itemDBs[item] = new itemDB(inventory[item]);
+  itemDBs[item] = new itemDB(inventory[item], item);
 }
 
 
