@@ -1,5 +1,10 @@
 var roll = [
   {
+    name: 'Doc',
+    id: 101,
+    grade: 1999,
+    classTime: [{"day":"Dr. Urbano", "time":"11:30"}]},
+  {
     name: 'Ella',
     id: 1,
     grade: 2023,
@@ -158,5 +163,10 @@ var roll = [
     name: 'Harley',
     id: 30,
     grade: 2023,
-    classTime: []}
+    classTime: []},
+    {
+      name: 'Mr. Mitchell',
+      id: 101,
+      grade: 1999,
+      classTime: [{"day":"Faculty", "time":"HS"}]},
 ];
