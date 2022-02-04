@@ -1,15 +1,20 @@
 var iPads = [
   {
-    name: 'Bronze (1)',
+    name: 'Rose Gold (1)',
     id: 1
   },
   {
-    name: 'Black (2)',
+    name: 'Space Grey (Red) (2)',
     id: 2
   },
   {
     name: 'White (3)',
     id: 3
+  }
+  ,
+  {
+    name: 'Blue Case ITEF (4)',
+    id: 4
   }
 ];
 
@@ -19,7 +24,7 @@ var laptops = [
     id: 1
   },
   {
-    name: "Macbook 13 Blue (2)",
+    name: "Macbook 13 Green (2)",
     id: 2
   },
   {
@@ -27,8 +32,12 @@ var laptops = [
     id: 3
   },
   {
-    name: "Chromebook G (4)",
+    name: "HP1 17 (4)",
     id: 4
+  },
+  {
+    name: "Chromebook Red (Ghibli) (4)",
+    id: 5
   }
 ]
 
