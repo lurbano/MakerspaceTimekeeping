@@ -52,7 +52,7 @@ class Student{
     let outDiv = doc.getElementById("result");
     let h = doc.createElement('h3');
     h.innerHTML = "Login/Logout";
-    outDiv.replaceChildren(h);
+    outDiv.innerHTML = h;
 
     loginTimes = JSON.parse(loginTimes);
 
@@ -529,7 +529,7 @@ class Item{
     let outDiv = doc.getElementById("result");
     let h = doc.createElement('h3');
     h.innerHTML = `Check In/Out ${this.itemType}[${this.id}]: ${this.name}`;
-    outDiv.replaceChildren(h);
+    outDiv.innerHTML = h;
     makeTable(outDiv, data, tableProps, true);
 
   }
@@ -568,7 +568,7 @@ class itemDB{
     let outDiv = doc.getElementById("result");
     let h = doc.createElement('h3');
     h.innerHTML = `${itemType} Status`;
-    outDiv.replaceChildren(h);
+    outDiv.innerHTML = h;
 
     let data = JSON.parse(msg);
 
