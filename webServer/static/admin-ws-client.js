@@ -51,7 +51,9 @@ $(document).ready(function(){
 
             if (sData.info == 'login times'){
               let stu = students.getById(sData.studentId);
-              stu.outputTable(sData.msg);
+              stu.outputCalendar(sData.msg);
+              stu.outputTable(sData.msg, false);
+
             }
 
             if (sData.info == 'selectItemData'){

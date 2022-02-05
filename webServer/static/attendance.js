@@ -47,12 +47,12 @@ class Student{
     sel.style.backgroundColor = getStudentColorCode(this.grade);
     selDiv.add(sel);
   }
-  outputTable(loginTimes){
+  outputTable(loginTimes, clear=true){
 
     let outDiv = doc.getElementById("result");
     let h = doc.createElement('h3');
     h.innerHTML = "Login/Logout";
-    outDiv.innerHTML = "";
+    if (clear) { outDiv.innerHTML = ""; }
     outDiv.appendChild(h);
 
     loginTimes = JSON.parse(loginTimes);
@@ -69,6 +69,45 @@ class Student{
     }
 
   }
+  outputCalendar(loginTimes, clear=true){
+
+    let outDiv = doc.getElementById("result");
+    let h = doc.createElement('h3');
+    h.innerHTML = "Login/Logout";
+    if (clear) { outDiv.innerHTML = ""; }
+    outDiv.appendChild(h);
+
+    loginTimes = JSON.parse(loginTimes);
+
+    if (loginTimes.length === 0) {
+      let dataDiv = doc.createElement('div');
+      dataDiv.innerHTML = `No login data`;
+      outDiv.appendChild(dataDiv);
+    }
+    else {
+
+      makeCalendar(outDiv, loginTimes);
+    }
+
+  }
+}
+
+function makeCalendar(parentDiv, a = [], settings={}){
+  //add div for calendar
+  let calDiv = doc.createElement("div");
+  parentDiv.appendChild(calDiv);
+  let events = [];
+  for (let event of a){
+    let t = getTime(event.time);
+    let [y,m,d] = t.ymd;
+    let e = {
+      Date: new Date(y, m, d), //new Date(event.time),
+      Title: event.action
+    }
+    events.push(e);
+  }
+
+  caleandar(calDiv, events, settings);
 }
 
 class confirmWindow{
@@ -329,13 +368,15 @@ function getTime(setTime = undefined){
   let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
   let shortDateOptions = { weekday: 'short', year: '2-digit', month: 'short', day: 'numeric'};
   let shortOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' , hour: '2-digit', minute: '2-digit'};
+  let ymd = [t.getFullYear(), t.getMonth(), t.getDate()];
 
   let dt = {
     dateObject: t,
     date: t.toLocaleDateString('en-US', options),
     shortDate: t.toLocaleDateString('en-US', shortDateOptions),
     short: t.toLocaleString('en-US', shortOptions),
-    time: t.toLocaleTimeString()
+    time: t.toLocaleTimeString(),
+    ymd: ymd
   };
 
   return dt;
