@@ -143,7 +143,7 @@ class confirmWindow{
 
     //put student name on page
     let nameTitle = doc.createElement('div');
-    nameTitle.innerHTML = `<p>Hi<br><h1>${student.name}</h1>`;
+    nameTitle.innerHTML = `<h1>${student.name}</h1>`;
     this.div.appendChild(nameTitle);
 
     // add time to page:
@@ -313,9 +313,11 @@ class checkoutControl{
     for (let i = 0; i < this.items.length; i++){
       this.items[i].button = getButton({
                                 title: this.items[i].name,
-                                infoId: `${this.itemName}-${this.items[i].id}`
+                                infoId: `${this.itemName}-${this.items[i].id}`,
+                                className: `${this.itemName.slice(0,-1)}Button`
                               });
-      this.items[i].button.classList.add('item');
+      //this.items[i].button.classList.add('item');
+      //this.items[i].button.classList.add(`${this.itemName.slice(0,-1)}Button`);
 
       itemListDiv.append(this.items[i].button);
 
@@ -408,7 +410,7 @@ function getCheckoutButton({
           } = {}){
   let button = doc.createElement('div');
 
-  button.classList.add(className);
+  button.classList.add(`${type}Button`);
 
   let titleDiv = doc.createElement('div');
   titleDiv.classList.add('bigButtonInfo');
