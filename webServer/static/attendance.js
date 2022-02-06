@@ -139,7 +139,7 @@ class confirmWindow{
     //this.div.classList.add('signIn');
 
     //this.makeCancelButton();
-    this.cancelBut = new cancelButton(this.div);
+    this.cancelBut = new cancelButton(this.div, true);
 
     //put student name on page
     let nameTitle = doc.createElement('div');
@@ -209,10 +209,14 @@ class confirmWindow{
   }
 
   makeHistoryButton(div){
-    let button = getButton({
-                          title: "History",
-                          info: 'Sign Ins'
-                        });
+    // let button = getButton({
+    //                       title: "History",
+    //                       info: 'Sign Ins'
+    //                     });
+    let button = doc.createElement('div');
+    button.innerHTML = "History";
+    button.classList.add('mediumButton');
+
     button.style.gridColumn = 5;
     button.style.gridRow = 3;
 
@@ -223,7 +227,7 @@ class confirmWindow{
       let historyWindow = doc.createElement('div');
       historyWindow.classList.add("inventoryWindow");
       historyWindow.innerHTML = `<h2>${this.student.name}</h2>`;
-      let closeButton = new cancelButton(historyWindow, false);
+      let closeButton = new cancelButton(historyWindow);
       let calendarDiv = doc.createElement("div");
       calendarDiv.setAttribute("id", "studentCalendar");
       historyWindow.appendChild(calendarDiv);
@@ -293,7 +297,7 @@ class checkoutControl{
   makeWindow(){
     this.window = doc.createElement('div');
     this.window.classList.add('inventoryWindow');
-    this.cancelBut = new cancelButton(this.window);
+    this.cancelBut = new cancelButton(this.window, true);
 
     //header
     let h = doc.createElement('h2');
@@ -345,7 +349,7 @@ class checkoutControl{
   }
 }
 class cancelButton{
-  constructor(parentDiv = undefined, closeAll=true){
+  constructor(parentDiv = undefined, closeAll=false){
     this.parentDiv = parentDiv;
     this.closeAll = closeAll;
     this.button = doc.createElement("input");
@@ -563,7 +567,7 @@ class messageWindow{
     this.window = doc.createElement('div');
     this.window.classList.add('messageWindow');
     //this.window.innerHTML = this.msg;
-    this.cancelBut = new cancelButton(this.window);
+    this.cancelBut = new cancelButton(this.window, true);
 
     let m = doc.createElement('div');
     m.classList.add('message');
