@@ -17,13 +17,13 @@ class studentLogger:
         except:
             self.handler.write_message({'info':'sign in', 'msg':"Error: Failed to sign in."})
 
-    def getAll(self, studentId):
+    def getAll(self, studentId, what = "selectStudent"):
         studentId = int(studentId)
         stu = Query()
         result = self.timeDB.search(stu.id == studentId);
         print(f'Student {studentId}:', result)
         self.handler.write_message({
-                                    'info': 'login times',
+                                    'info': what,
                                     'studentId': studentId,
                                     'msg': json.dumps(result)
                                   })

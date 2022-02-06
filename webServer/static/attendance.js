@@ -47,7 +47,11 @@ class Student{
     sel.style.backgroundColor = getStudentColorCode(this.grade);
     selDiv.add(sel);
   }
-  outputTable(loginTimes, clear=true){
+  outputTable({
+          loginTimes=[],
+          clear=true,
+          targetDiv = 'result'
+        }={}){
 
     let outDiv = doc.getElementById("result");
     let h = doc.createElement('h3');
@@ -69,9 +73,13 @@ class Student{
     }
 
   }
-  outputCalendar(loginTimes, clear=true){
+  outputCalendar({
+          loginTimes = [],
+          targetDiv='result',
+          clear=true
+        } = {}){
 
-    let outDiv = doc.getElementById("result");
+    let outDiv = doc.getElementById(targetDiv);
     let h = doc.createElement('h3');
     h.innerHTML = "Login/Logout";
     if (clear) { outDiv.innerHTML = ""; }
@@ -81,7 +89,7 @@ class Student{
 
     if (loginTimes.length === 0) {
       let dataDiv = doc.createElement('div');
-      dataDiv.innerHTML = `No login data`;
+      dataDiv.innerHTML = `No logins for calendar.`;
       outDiv.appendChild(dataDiv);
     }
     else {
@@ -147,7 +155,7 @@ class confirmWindow{
     this.makeOptions(t);
 
     this.parentDiv.appendChild(this.div);
-    openWindows.push(this.div);
+    //openWindows.push(this.div);
   }
 
   makeOptions(t){
@@ -157,6 +165,8 @@ class confirmWindow{
     //sign in
     this.makeSignInButton(optionsDiv, t, "Sign In");
     this.makeSignInButton(optionsDiv, t, "Sign Out");
+    //history
+    this.makeHistoryButton(optionsDiv);
 
     //checkout buttons
     let i = 0;
@@ -193,6 +203,36 @@ class confirmWindow{
           action: action,
           time: t.dateObject.toJSON()
         }
+      };
+      this.ws.send(JSON.stringify(msg));
+    })
+  }
+
+  makeHistoryButton(div){
+    let button = getButton({
+                          title: "History",
+                          info: 'Sign Ins'
+                        });
+    button.style.gridColumn = 5;
+    button.style.gridRow = 3;
+
+    div.appendChild(button);
+
+    button.addEventListener("click", () => {
+      //console.log("sign in", this);
+      let historyWindow = doc.createElement('div');
+      historyWindow.classList.add("inventoryWindow");
+      historyWindow.innerHTML = `<h2>${this.student.name}</h2>`;
+      let closeButton = new cancelButton(historyWindow, false);
+      let calendarDiv = doc.createElement("div");
+      calendarDiv.setAttribute("id", "studentCalendar");
+      historyWindow.appendChild(calendarDiv);
+      this.parentDiv.appendChild(historyWindow);
+
+
+      let msg = {
+        what: "studentSignInHistory",
+        studentId: this.student.id
       };
       this.ws.send(JSON.stringify(msg));
     })
@@ -255,6 +295,17 @@ class checkoutControl{
     this.window.classList.add('inventoryWindow');
     this.cancelBut = new cancelButton(this.window);
 
+    //header
+    let h = doc.createElement('h2');
+    h.innerHTML = `${this.itemName} ${this.action}`;
+    this.window.appendChild(h);
+
+    //items
+    let itemListDiv = doc.createElement('div');
+    itemListDiv.classList.add('itemList');
+    this.window.appendChild(itemListDiv);
+
+
     for (let i = 0; i < this.items.length; i++){
       this.items[i].button = getButton({
                                 title: this.items[i].name,
@@ -262,7 +313,7 @@ class checkoutControl{
                               });
       this.items[i].button.classList.add('item');
 
-      this.window.append(this.items[i].button);
+      itemListDiv.append(this.items[i].button);
 
       this.items[i].button.addEventListener("click", () => {
 
@@ -286,7 +337,7 @@ class checkoutControl{
     }
 
     this.parentDiv.appendChild(this.window);
-    openWindows.push(this.window);
+    //openWindows.push(this.window);
 
     //get last status info
     getCheckoutInfoForUser(this.ws, this.itemName);
@@ -294,20 +345,27 @@ class checkoutControl{
   }
 }
 class cancelButton{
-  constructor(parentDiv = undefined){
+  constructor(parentDiv = undefined, closeAll=true){
     this.parentDiv = parentDiv;
+    this.closeAll = closeAll;
     this.button = doc.createElement("input");
     this.button.setAttribute("type", "button");
     this.button.setAttribute("value", "Close");
     this.button.classList.add('closeButton');
 
     this.parentDiv.appendChild(this.button);
+    openWindows.push(this.parentDiv);
 
     this.button.addEventListener('click', () => {
       //this.parentDiv.remove();
 
-      openWindows.forEach(div => div.remove());
-      openWindows = [];
+      if (closeAll) {
+        openWindows.forEach(div => div.remove());
+        openWindows = [];
+      }
+      else {
+        this.parentDiv.remove();
+      }
 
     })
     //return this.button;
@@ -513,7 +571,7 @@ class messageWindow{
     this.window.appendChild(m);
 
     this.parentDiv.appendChild(this.window);
-    openWindows.push(this.window);
+    //openWindows.push(this.window);
   }
 }
 

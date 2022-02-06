@@ -138,6 +138,12 @@
   border-radius: 10px;
 }
 
+.itemList {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  justify-items: center;
+}
+
 .item {
   background-color: lightblue;
 }

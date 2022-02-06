@@ -49,10 +49,26 @@ $(document).ready(function(){
             }
 
 
-            if (sData.info == 'login times'){
+            if (sData.info == 'selectStudent'){
               let stu = students.getById(sData.studentId);
-              stu.outputCalendar(sData.msg);
-              stu.outputTable(sData.msg, false);
+              stu.outputCalendar({
+                    loginTimes: sData.msg,
+                    targetDiv: "result"
+                  });
+              stu.outputTable({
+                loginTimes: sData.msg,
+                targetDiv: "result",
+                clear: false
+              });
+
+            }
+            if (sData.info == 'studentSignInHistory'){
+              let stu = students.getById(sData.studentId);
+              stu.outputCalendar({
+                    loginTimes: sData.msg,
+                    targetDiv: "studentCalendar"
+                  });
+              //stu.outputTable(sData.msg, false);
 
             }
 

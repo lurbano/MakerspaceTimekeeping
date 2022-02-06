@@ -76,24 +76,21 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 		print ('[WS] Incoming on_message:', message)
 		try:
 			msg = json.loads(message)
-			# if msg["what"] == "server":
-			# 	if msg["opts"] == "off":
-			# 		sys.exit("Stopping server")
-			#
-			# if msg["what"] == "hello":
-			# 	r = 'Say what?'
-			# 	self.write_message({"info": "hello", "reply":r})
 
 			if msg["what"] == "sign in":
 
 				self.stuLog.logSignIn(msg['info'])
+
+			if msg["what"] == "studentSignInHistory":
+
+				self.stuLog.getAll(msg['studentId'], msg['what'])
 
 			if msg['what'] == 'checkout':
 				self.logger = checkoutLogger(self, db_directory)
 				self.logger.checkout(msg['info'])
 
 			if msg['what'] == 'selectStudent':
-				self.stuLog.getAll(msg['studentId'])
+				self.stuLog.getAll(msg['studentId'], msg['what']);
 				print('selecting student', msg['studentId'])
 
 			if msg['what'] == 'selectItemData':

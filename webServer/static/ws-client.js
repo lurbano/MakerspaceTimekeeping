@@ -38,6 +38,15 @@ $(document).ready(function(){
               //window.alert(sData.msg);
               let mw = new messageWindow({ws:ws, msg:sData.msg});
             }
+            if (sData.info == 'studentSignInHistory'){
+              let stu = students.getById(sData.studentId);
+              stu.outputCalendar({
+                    loginTimes: sData.msg,
+                    targetDiv: "studentCalendar"
+                  });
+              //stu.outputTable(sData.msg, false);
+
+            }
 
             if (sData.info == 'checkout'){
               let mw = new messageWindow({ws:ws, msg:sData.msg});
