@@ -550,6 +550,10 @@ function makeStudentPage(ws){
     s.makeDiv(studentPageDiv);
   }
 
+  //set up for grade levels
+  console.log(students.gradeList);
+
+
 }
 
 class messageWindow{
@@ -591,6 +595,7 @@ class studentDB{
       this.db.push( new Student(roll[i]) );
     }
     this.n = this.db.length;
+    this.gradeList = this.getGradeList();
   }
   getById(id){
     id = parseInt(id);
@@ -600,6 +605,18 @@ class studentDB{
       }
     }
     return undefined;
+  }
+  getGradeList(){
+    let ct = 0;
+    gradeList = [];
+    for (let i=0; i<this.n; i++){
+      let l_add = true;
+      for (let g of gradeList){
+        if ( g === this.db.grade ) { l_add = false; }
+      }
+      if (l_add) { gradeList.push(this.db.grade); }
+    }
+    return gradeList;
   }
 }
 students = new studentDB(roll);
