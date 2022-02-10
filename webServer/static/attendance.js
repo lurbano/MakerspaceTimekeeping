@@ -209,10 +209,7 @@ class confirmWindow{
   }
 
   makeHistoryButton(div){
-    // let button = getButton({
-    //                       title: "History",
-    //                       info: 'Sign Ins'
-    //                     });
+
     let button = doc.createElement('div');
     button.innerHTML = "History";
     button.classList.add('mediumButton');
@@ -426,6 +423,19 @@ function getCheckoutButton({
 
 }
 
+function getGradeButton(gradeLevel = 'Faculty', parentDiv = doc.getElementById('byGrade')){
+
+  //let button = getButton({title: gradeLevel});
+  let button = doc.createElement('div');
+  button.classList.add('gradeButton');
+  button.innerHTML = gradeLevel;
+  button.addEventListener('click', () => {
+    students.showStudents(gradeLevel);
+  })
+  parentDiv.appendChild(button);
+  return button;
+}
+
 function getTime(setTime = undefined){
   //time
   let t = setTime === undefined ? new Date() : new Date(setTime);
@@ -545,13 +555,21 @@ function populateItemStatus(data){
 
 function makeStudentPage(ws){
   //put students on page
-  for (let i=0; i<students.db.length; i++){
-    let s = students.db[i];
-    s.makeDiv(studentPageDiv);
-  }
+  // for (let i=0; i<students.db.length; i++){
+  //   let s = students.db[i];
+  //   s.makeDiv(studentPageDiv);
+  // }
+  students.showStudents('Makerspace');
 
   //set up for grade levels
   console.log(students.gradeList);
+  getGradeButton('Makerspace');
+  getGradeButton();
+  getGradeButton('Seniors');
+  getGradeButton('Juniors');
+  getGradeButton('Sophmores');
+  getGradeButton('Freshmen');
+  getGradeButton('Middle School');
 
 
 }
@@ -608,15 +626,63 @@ class studentDB{
   }
   getGradeList(){
     let ct = 0;
-    gradeList = [];
+    let gradeList = [];
     for (let i=0; i<this.n; i++){
       let l_add = true;
       for (let g of gradeList){
-        if ( g === this.db.grade ) { l_add = false; }
+        if ( g === this.db[i].grade ) { l_add = false; }
       }
-      if (l_add) { gradeList.push(this.db.grade); }
+      if (l_add) { gradeList.push(this.db[i].grade); }
     }
     return gradeList;
+  }
+  showStudents(who="all"){
+    let gradeYear;
+    who = who.toLowerCase();
+
+    let t = new Date();
+    let y = t.getFullYear();
+    let m = t.getMonth();
+
+    if (who === 'faculty'){
+      gradeYear = [1970];
+    }
+    else if (who === 'seniors'){
+      gradeYear = m > 7 ? [y+1] : [y];
+    }
+    else if (who === 'juniors'){
+      gradeYear = m > 7 ? [y+2] : [y+1];
+    }
+    else if (who === 'sophmores'){
+      gradeYear = m > 7 ? [y+3] : [y+2];
+    }
+    else if (who === 'freshmen'){
+      gradeYear = m > 7 ? [y+4] : [y+3];
+    }
+    else if (who === 'middle school'){
+      gradeYear = m > 7 ? [y+4, y+5] : [y+3, y+4];
+    }
+
+
+    studentPageDiv.innerHTML = ''; //empty
+
+    if (gradeYear !== undefined){
+      for (let i=0; i<this.n; i++){
+        if ( gradeYear.includes(this.db[i].grade) ){
+          this.db[i].makeDiv(studentPageDiv);
+        }
+      }
+    }
+
+    if (who === 'makerspace'){
+      for (let i=0; i<this.n; i++){
+        if ( this.db[i].classTime.length > 0 ){
+          this.db[i].makeDiv(studentPageDiv);
+        }
+      }
+    }
+
+
   }
 }
 students = new studentDB(roll);

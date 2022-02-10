@@ -1,7 +1,8 @@
-#students {
+#students{
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   justify-items: center;
+  padding-bottom: 5em;
 }
 
 .student {
@@ -12,12 +13,33 @@
   margin: 5px;
   font: small-caps 1.5em bold fantasy;
   padding: 3px;
+  cursor: pointer;
 }
 
 .student_opts {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   grid-gap: 2em;
+}
+
+#byGrade {
+  position: fixed;
+  bottom: 0px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  justify-items: center;
+  background-color: grey;
+}
+.gradeButton {
+  border: 2px solid black;
+  background-color: #f2ff7a;
+  width: 80%;
+  text-align: center;
+  margin: 5px;
+  font: small-caps 1.2em bold fantasy;
+  padding-top: 0.25em;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
 #query {
