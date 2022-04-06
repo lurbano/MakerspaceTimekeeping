@@ -153,6 +153,19 @@
   transition-property: height;
   transition-duration: 1s;
 }
+.rpiStripButton {
+  width: 75%;
+  height: 75%;
+  background-image: linear-gradient(to bottom left, khaki, #cbffc0);
+  border-color: red;
+  border-style: outset;
+  border-width: 10px 5px 20px 5px;
+  border-radius: 5px;
+  padding-top:1em;
+
+  transition-property: height;
+  transition-duration: 1s;
+}
 .iPadWindow {
   width: 15em;
   height: 12em;
